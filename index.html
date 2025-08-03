@@ -47,12 +47,9 @@
     }
 
     @keyframes shimmer {
-
-      0%,
-      100% {
+      0%, 100% {
         opacity: 0;
       }
-
       50% {
         opacity: 1;
       }
@@ -94,7 +91,7 @@
       transform: scale(1.05);
     }
 
-    /* Navigation */
+    /* Navigation - Con Menu Hamburger */
     nav {
       background: white;
       padding: 1rem 0;
@@ -104,11 +101,59 @@
       z-index: 100;
     }
 
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .nav-logo {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #000;
+    }
+
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 5px;
+      z-index: 101;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 25px;
+      height: 3px;
+      background: #000;
+      margin: 5px 0;
+      transition: 0.3s;
+      transform-origin: center;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(6px, 6px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -6px);
+    }
+
     nav ul {
       list-style: none;
       display: flex;
       justify-content: center;
       gap: 2rem;
+      margin: 0;
+      padding: 0;
     }
 
     nav a {
@@ -210,6 +255,31 @@
       max-width: 800px;
       margin: 0 auto;
       text-align: center;
+      padding: 0 20px;
+    }
+
+    /* Container responsivo per video YouTube */
+    .video-responsive {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      height: 0;
+      padding-bottom: 56.25%; /* Aspect ratio 16:9 */
+      overflow: hidden;
+      border-radius: 10px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+      margin: 0 auto;
+      display: block;
+    }
+
+    .video-responsive iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      border-radius: 10px;
     }
 
     .video-placeholder {
@@ -265,15 +335,63 @@
       padding: 2rem 0;
     }
 
-    /* Responsive */
+    /* Responsive - Menu Hamburger per Mobile */
     @media (max-width: 768px) {
       h1 {
         font-size: 2.5rem;
       }
 
+      .hamburger {
+        display: block;
+      }
+
       nav ul {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        height: 100vh;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
         flex-direction: column;
-        gap: 1rem;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        transition: right 0.3s ease;
+        z-index: 100;
+      }
+
+      nav ul.active {
+        right: 0;
+      }
+
+      nav ul li {
+        opacity: 0;
+        transform: translateX(50px);
+        transition: all 0.3s ease;
+      }
+
+      nav ul.active li {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      nav ul.active li:nth-child(1) { transition-delay: 0.1s; }
+      nav ul.active li:nth-child(2) { transition-delay: 0.2s; }
+      nav ul.active li:nth-child(3) { transition-delay: 0.3s; }
+      nav ul.active li:nth-child(4) { transition-delay: 0.4s; }
+
+      nav a {
+        color: white;
+        font-size: 1.5rem;
+        padding: 1rem 2rem;
+        border: 2px solid transparent;
+      }
+
+      nav a:hover {
+        background: rgba(255,255,255,0.1);
+        border-color: white;
+        transform: scale(1.05);
       }
 
       .social-links {
@@ -284,6 +402,20 @@
       .gallery-grid {
         grid-template-columns: 1fr;
       }
+
+      /* Video responsive specifico per mobile */
+      .video-container {
+        padding: 0 10px;
+      }
+
+      .video-responsive {
+        padding-bottom: 56.25%;
+      }
+
+      .video-placeholder {
+        height: 200px;
+        font-size: 1rem;
+      }
     }
 
     /* Animations */
@@ -292,7 +424,6 @@
         opacity: 0;
         transform: translateY(30px);
       }
-
       to {
         opacity: 1;
         transform: translateY(0);
@@ -322,8 +453,14 @@
 
   <!-- Navigation -->
   <nav>
-    <div class="container">
-      <ul>
+    <div class="nav-container">
+      <div class="nav-logo">♪ Menu</div>
+      <button class="hamburger" id="hamburgerBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <ul id="navMenu">
         <li><a href="#biografia">Biografia</a></li>
         <li><a href="#gallery">Galleria</a></li>
         <li><a href="#video">Video</a></li>
@@ -362,19 +499,19 @@
         <div class="gallery-item">
           <img src="https://i.postimg.cc/YCb22Y5g/temp-Image5o73-RJ.avif" alt="Concerto dal vivo" style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px;">
         </div>
-      </div>
-      <div class="gallery-item">
-        <img src="https://i.postimg.cc/FH9sQDBN/temp-Imagezigmc-H.avif" alt="Concerto dal vivo" style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px;">
-      </div>
-      <div class="gallery-item">
-        <div class="gallery-placeholder">
-          Foto 4 - Sostituisci con le tue immagini
+        <div class="gallery-item">
+          <img src="https://i.postimg.cc/FH9sQDBN/temp-Imagezigmc-H.avif" alt="Concerto dal vivo" style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px;">
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-placeholder">
+            Foto 4 - Sostituisci con le tue immagini
+          </div>
         </div>
       </div>
     </div>
-    </div>
   </section>
- <section id="video">
+  
+  <section id="video">
     <div class="container">
         <h2>Video</h2>
         <div class="video-container">
@@ -384,17 +521,7 @@
                         allowfullscreen>
                 </iframe>
             </div>
-
-        <!-- Esempio di come inserire un video YouTube:
-                <iframe width="100%" height="450" 
-                        src="https://www.youtube.com/embed/TUO_VIDEO_ID" 
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen
-                        style="border-radius: 10px;">
-                </iframe>
-                -->
-      </div>
+        </div>
     </div>
   </section>
 
@@ -409,7 +536,7 @@
           <a href="https://facebook.com/attiriccardi/" class="social-link" target="_blank">Facebook</a>
           <a href="https://youtube.com/@AttilioRiccardi" class="social-link" target="_blank">YouTube</a>
           <a href="https://open.spotify.com/intl-it/artist/33qCShB9vo9D3EXJWUJUIZ?si=EGhoOm7GSrupXFAo1mVAgw" class="social-link" target="_blank">Spotify</a>
-          <a href="#" class="social-link">SoundCloud</a>
+          <a href="#" class="social-link" target="_blank">SoundCloud</a>
           <a href="mailto:tuaemail@example.com" class="social-link">Email</a>
           <!-- Esempio di link corretto: <a href="https://instagram.com/tuonome" class="social-link">Instagram</a> -->
         </div>
@@ -428,6 +555,31 @@
   </footer>
 
   <script>
+    // Menu Hamburger
+    const hamburger = document.getElementById('hamburgerBtn');
+    const navMenu = document.getElementById('navMenu');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      navMenu.classList.toggle('active');
+    });
+
+    // Chiudi menu quando clicchi su un link
+    document.querySelectorAll('nav a[href^="#"]').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+      });
+    });
+
+    // Chiudi menu cliccando fuori
+    document.addEventListener('click', (e) => {
+      if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+      }
+    });
+
     // Smooth scrolling per i link di navigazione
     document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
@@ -441,6 +593,7 @@
         }
       });
     });
+    
     // Effetto parallax leggero per l'header
     window.addEventListener('scroll', () => {
       const scrolled = window.pageYOffset;
