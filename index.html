@@ -1,621 +1,123 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>attirick</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>home_ATTI_OFFICIAL_SITE</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
 
-    body {
-      font-family: 'Georgia', serif;
-      line-height: 1.6;
-      color: #333;
-      background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
-    }
+  <!-- Favicons -->
+  <link href="https://i.postimg.cc/FsFct8Sv/FAV-ICON-AR.png" rel="icon">
+  <link href="https://i.postimg.cc/FsFct8Sv/FAV-ICON-AR.png" rel="apple-touch-icon">
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
-    /* Header */
-    header {
-      background: #000;
-      color: white;
-      padding: 2rem 0;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
 
-    header::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 50%);
-      animation: shimmer 3s ease-in-out infinite;
-    }
+  <!-- Main CSS File -->
+  <link href="assets/css/main.css" rel="stylesheet">
 
-    @keyframes shimmer {
-      0%, 100% {
-        opacity: 0;
-      }
-      50% {
-        opacity: 1;
-      }
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 1;
-    }
-
-    h1 {
-      font-size: 3.5rem;
-      margin-bottom: 0.5rem;
-      font-weight: 300;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-    }
-
-    .subtitle {
-      font-size: 1.2rem;
-      opacity: 0.8;
-      font-style: italic;
-      margin-bottom: 2rem;
-    }
-
-    .profile-image {
-      width: 200px;
-      height: 200px;
-      border-radius: 50%;
-      border: 5px solid white;
-      margin: 2rem auto;
-      display: block;
-      object-fit: cover;
-      transition: transform 0.3s ease;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
-
-    .profile-image:hover {
-      transform: scale(1.05);
-    }
-
-    /* Navigation - Con Menu Hamburger */
-    nav {
-      background: white;
-      padding: 1rem 0;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .nav-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    .nav-logo {
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #000;
-    }
-
-    .hamburger {
-      display: none;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 5px;
-      z-index: 101;
-    }
-
-    .hamburger span {
-      display: block;
-      width: 25px;
-      height: 3px;
-      background: #000;
-      margin: 5px 0;
-      transition: 0.3s;
-      transform-origin: center;
-    }
-
-    .hamburger.active span:nth-child(1) {
-      transform: rotate(45deg) translate(6px, 6px);
-    }
-
-    .hamburger.active span:nth-child(2) {
-      opacity: 0;
-    }
-
-    .hamburger.active span:nth-child(3) {
-      transform: rotate(-45deg) translate(7px, -6px);
-    }
-
-    nav ul {
-      list-style: none;
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      margin: 0;
-      padding: 0;
-    }
-
-    nav a {
-      color: #333;
-      text-decoration: none;
-      font-weight: 500;
-      padding: 0.5rem 1rem;
-      border-radius: 25px;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-size: 0.9rem;
-    }
-
-    nav a:hover {
-      background: #000;
-      color: white;
-      transform: translateY(-2px);
-    }
-
-    /* Sections */
-    section {
-      padding: 4rem 0;
-    }
-
-    section:nth-child(even) {
-      background: white;
-    }
-
-    h2 {
-      font-size: 2.5rem;
-      text-align: center;
-      margin-bottom: 3rem;
-      color: #000;
-      position: relative;
-      font-family: -apple-system, BlinkMacSystemFont, serif;
-        font-weight: 8000;     
-    }
-
-    h2::after {
-      content: '';
-      display: block;
-      width: 60px;
-      height: 3px;
-      background: #000;
-      margin: 1rem auto;
-    }
-
-    /* Biography */
-    .bio-content {
-      max-width: 800px;
-      margin: 0 auto;
-      font-size: 1.1rem;
-      text-align: justify;
-      line-height: 1.1;
-        font-family: 'Roboto', sans-serif;
-    }
-
-    .bio-placeholder {
-      background: #f9f9f9;
-      border-left: 4px solid #000;
-      padding: 2rem;
-      font-style: normal;
-      color: #666;
-      margin: 2rem 0;
-    }
-
-    /* Gallery */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-
-    .gallery-item {
-      position: relative;
-      overflow: hidden;
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      transition: transform 0.3s ease;
-    }
-
-    .gallery-item:hover {
-      transform: translateY(-10px);
-    }
-
-    .gallery-placeholder {
-      width: 100%;
-      height: 250px;
-      background: linear-gradient(45deg, #e0e0e0, #f0f0f0);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #666;
-      font-size: 1.1rem;
-      border: 2px dashed #ccc;
-    }
-
-    /* Video Section */
-    .video-container {
-      max-width: 800px;
-      margin: 0 auto;
-      text-align: center;
-      padding: 0 20px;
-    }
-
-    /* Container responsivo per video YouTube */
-    .video-responsive {
-      position: relative;
-      width: 100%;
-      max-width: 800px;
-      height: 0;
-      padding-bottom: 56.25%; /* Aspect ratio 16:9 */
-      overflow: hidden;
-      border-radius: 10px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-      margin: 0 auto;
-      display: block;
-    }
-
-    .video-responsive iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-      border-radius: 10px;
-    }
-
-    .video-placeholder {
-      width: 100%;
-      height: 450px;
-      background: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 1.2rem;
-      border-radius: 10px;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-    }
-
-    /* Social Links */
-    .social-container {
-      text-align: center;
-        background: #000
-    }
-
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      flex-wrap: wrap;
-    }
-
-    .social-link {
-      display: inline-block;
-      padding: 1rem 2rem;
-      background: #000;
-      color: white;
-      text-decoration: none;
-      border-radius: 50px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    .social-link:hover {
-      background: #333;
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-    }
-
-    /* Footer */
-    footer {
-      background: #000;
-      color: white;
-      text-align: center;
-      padding: 2rem 0;
-    }
-
-    /* Responsive - Menu Hamburger per Mobile */
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 2.5rem;
-      }
-
-      .hamburger {
-        display: block;
-      }
-
-      nav ul {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        height: 100vh;
-        width: 100%;
-        background: rgba(0, 0, 0, 0.95);
-        backdrop-filter: blur(10px);
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 2rem;
-        transition: right 0.3s ease;
-        z-index: 100;
-      }
-
-      nav ul.active {
-        right: 0;
-      }
-
-      nav ul li {
-        opacity: 0;
-        transform: translateX(50px);
-        transition: all 0.3s ease;
-      }
-
-      nav ul.active li {
-        opacity: 1;
-        transform: translateX(0);
-      }
-
-      nav ul.active li:nth-child(1) { transition-delay: 0.1s; }
-      nav ul.active li:nth-child(2) { transition-delay: 0.2s; }
-      nav ul.active li:nth-child(3) { transition-delay: 0.3s; }
-      nav ul.active li:nth-child(4) { transition-delay: 0.4s; }
-
-      nav a {
-        color: white;
-        font-size: 1.5rem;
-        padding: 1rem 2rem;
-        border: 2px solid transparent;
-      }
-
-      nav a:hover {
-        background: rgba(255,255,255,0.1);
-        border-color: white;
-        transform: scale(1.05);
-      }
-
-      .social-links {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .gallery-grid {
-        grid-template-columns: 1fr;
-      }
-
-      /* Video responsive specifico per mobile */
-      .video-container {
-        padding: 0 10px;
-      }
-
-      .video-responsive {
-        padding-bottom: 56.25%;
-      }
-
-      .video-placeholder {
-        height: 200px;
-        font-size: 1rem;
-      }
-    }
-
-    /* Animations */
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    section {
-      animation: fadeInUp 0.6s ease-out;
-    }
-  </style>
 </head>
 
-<body>
-  <!-- Header -->
-  <header>
-    <div class="container">
-      <div class="hero-content">
-        <!-- PERSONALIZZA QUI: Sostituisci con la tua foto -->
-        <img src="https://i.postimg.cc/L6k67rvx/temp-Imagem-IUs-Hd.avif" alt="FOTO" class="profile-image">
+<body class="index-page">
 
-        <!-- PERSONALIZZA QUI: Inserisci il tuo nome -->
-        <h1>ATTILIO RICCARDI</h1>
-        <p class="subtitle">Musicista • Produttore</p>
-      </div>
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+
+      <a href="index.html" class="logo d-flex align-items-center">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <!-- <img src="assets/img/logo.webp" alt=""> -->
+        <h1 class="sitename">ATTI</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+            <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="bio.html" >Bio</a></li>
+          <li><a href="foto.html">Foto</a></li>
+          <li><a href="servizi.html">Servizi</a></li>
+          <li><a href="contatti.html">Contatti</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
     </div>
   </header>
 
-  <!-- Navigation -->
-  <nav>
-    <div class="nav-container">
-      <div class="nav-logo">♪ Menu</div>
-      <button class="hamburger" id="hamburgerBtn">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      <ul id="navMenu">
-        <li><a href="#biografia">Biografia</a></li>
-        <li><a href="#gallery">Galleria</a></li>
-        <li><a href="#video">Video</a></li>
-        <li><a href="#contatti">Contatti</a></li>
-      </ul>
-    </div>
-  </nav>
+  <main class="main">
 
-  <!-- Biography Section -->
-  <section id="biografia">
+<!-- Hero Section -->
+<section id="hero" class="hero section dark-background">
+  <div class="container hero-content" data-aos="zoom-out" data-aos-delay="100">
+    <h2>ATTILIO RICCARDI</h2>
+    <p>MUSICISTA <span class="typed" data-typed-items="PRODUTTORE, TECNICO DEL SUONO"></span><span class="typed-cursor typed-cursor--blink"></span></p>
+    <div class="social-links">
+      <a href="https://x.com/attilioriccardi" target="_blank"><i class="bi bi-twitter-x"></i></a>
+      <a href="https://www.facebook.com/attiriccardi" target="_blank"><i class="bi bi-facebook"></i></a>
+      <a href="https://www.instagram.com/attirick/" target="_blank"><i class="bi bi-instagram"></i></a>
+      <a href="https://www.youtube.com/@AttilioRiccardi" target="_blank"><i class="bi bi-youtube"></i></a>
+    </div>
+  </div>
+</section>
+
+
+  </main>
+
+  <footer id="footer" class="footer dark-background">
     <div class="container">
-      <h2>BIO</h2>
-      <div class="bio-content">
-        <!-- PERSONALIZZA QUI: Sostituisci tutto questo div con la tua biografia -->
-        <div class="bio-placeholder">
-          <p><strong>ATTILIO RICCARDI</strong></p>
-          <p>cantautore polistrumentista eccentrico, esordisce nel 2006 con la sua band Divinaflor con la quale realizza un Ep in collaborazione con Madaski (Africa Unite) e Davide Tomat (NAMB). Amante della musica italiana degli anni 60-70, cresce con i suoni degli anni 80 e viene influenzato dalla new wave inglese. Oggi Autore e compositore. Le sue parole sono storie di vita quotidiana, la sua musica è un film</p>
-          <p>Cantautore, one man band con progetto "Cantareveviva"</p>
-        </div>
-        <!-- Oppure scrivi direttamente qui senza il riquadro grigio:
-                <p>La tua biografia scritta normalmente...</p>
-                <p>Secondo paragrafo...</p>
-                -->
+      
+      <div class="social-links d-flex justify-content-center">
+      <a href="https://x.com/attilioriccardi" target="_blank"><i class="bi bi-twitter-x"></i></a>
+      <a href="https://www.facebook.com/attiriccardi" target="_blank"><i class="bi bi-facebook"></i></a>
+      <a href="https://www.instagram.com/attirick/" target="_blank"><i class="bi bi-instagram"></i></a>
+      <a href="https://www.youtube.com/@AttilioRiccardi" target="_blank"><i class="bi bi-youtube"></i></a>
       </div>
-    </div>
-  </section>
-
-  <!-- Gallery Section -->
-  <section id="gallery">
-    <div class="container">
-      <h2>FOTO</h2>
-      <div class="gallery-grid">
-        <div class="gallery-item">
-          <img src="https://i.postimg.cc/FK693msH/temp-Imagew5f-Iz-A.avif" alt="Concerto dal vivo" style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px;">
+      <div class="container">
+        <div class="copyright">
+          <span>2025 Attilio Riccardi. Tutti i diritti riservati.</span>
         </div>
-        <div class="gallery-item">
-          <img src="https://i.postimg.cc/YCb22Y5g/temp-Image5o73-RJ.avif" alt="Concerto dal vivo" style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px;">
-        </div>
-        <div class="gallery-item">
-          <img src="https://i.postimg.cc/L6k67rvx/temp-Imagem-IUs-Hd.avif" alt="Concerto dal vivo" style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px;">
-        </div>
-        <div class="gallery-item">
-            <img src="https://i.postimg.cc/sgdvT2F6/WEB-PAGE-bn.png" alt="Concerto dal vivo" style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px;">
-         
+        <div class="credits">
+          <!-- All the links in the footer should remain intact. -->
+          <!-- You can delete the links only if you've purchased the pro version. -->
+          <!-- Licensing information: https://bootstrapmade.com/license/ -->
+          <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
+          Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
         </div>
       </div>
-    </div>
-  </section>
-  
-  <section id="video">
-    <div class="container">
-        <h2>VIDEO</h2>
-        <div class="video-container">
-            <div class="video-responsive">
-              <iframe src="https://www.youtube.com/embed/Qg7-XzzFjRo" 
-        title="video atti"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen>
-</iframe>
-            </div>
-        </div>
-    </div>
-  </section>
-
-  <!-- Social Links Section -->
-  <section id="contatti">
-    <div class="container">
-      <h2>SEGUIMI</h2>
-      <div class="social-container">
-        <div class="social-links">
-          <!-- PERSONALIZZA QUI: Sostituisci # con i tuoi link reali -->
-          <a href="https://instagram.com/attirick"><img src="https://i.postimg.cc/PrFpskLZ/Instagram-W.png" alt="Instagram" width="20" height="20" style="vertical-align:middle" loading="lazy">
-</a>
-          <a href="https://facebook.com/attirick">
-    <img src="https://i.postimg.cc/NGD2DXBd/Facebook-W.png" alt="Facebook" width="20" height="20" style="vertical-align:middle" loading="lazy">
-</a>
-          <a href="https://youtube.com/@attirick">
-    <img src="https://i.postimg.cc/G3X9G1xN/You-Tube-W.png" alt="YouTube" width="20" height="20" style="vertical-align:middle" loading="lazy">
-</a>
-         <a href="https://open.spotify.com/artist/attirick">
-    <img src="https://i.postimg.cc/Zn5R2f4V/Spotify-W.png" alt="Spotify" width="20" height="20" style="vertical-align:middle" loading="lazy">
-</a>
-        
-          <a href="mailto:attilioriccardi@gmail.com?subject=Newsletter%20ATTI&body=Ciao%20ATTI,%0D%0A%0D%0AVorrei%20iscrivermi%20alla%20tua%20newsletter.%0D%0A%0D%0AGrazie!">
-    <img src="https://i.postimg.cc/sXy19j8F/Newsletter-W.png" alt="Newsletter" width="20" height="20" style="vertical-align:middle" loading="lazy">
-</a>
-          <!-- Esempio di link corretto: <a href="https://instagram.com/tuonome" class="social-link">Instagram</a> -->
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    <div class="container">
-      <p>&copy; 2025 Attilio Riccardi. Tutti i diritti riservati.</p>
-      <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 0.5rem;">
-        Musicista • Artista • Produttore • Mix & Master Engineer 
-      </p>
     </div>
   </footer>
 
-  <script>
-    // Menu Hamburger
-    const hamburger = document.getElementById('hamburgerBtn');
-    const navMenu = document.getElementById('navMenu');
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('active');
-      navMenu.classList.toggle('active');
-    });
+  <!-- Preloader -->
+  <div id="preloader"></div>
 
-    // Chiudi menu quando clicchi su un link
-    document.querySelectorAll('nav a[href^="#"]').forEach(link => {
-      link.addEventListener('click', () => {
-        hamburger.classList.remove('active');
-        navMenu.classList.remove('active');
-      });
-    });
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/typed.js/typed.umd.js"></script>
+  <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
 
-    // Chiudi menu cliccando fuori
-    document.addEventListener('click', (e) => {
-      if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
-        hamburger.classList.remove('active');
-        navMenu.classList.remove('active');
-      }
-    });
+  <!-- Main JS File -->
+  <script src="assets/js/main.js"></script>
 
-    // Smooth scrolling per i link di navigazione
-    document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
-      });
-    });
-    
-    // Effetto parallax leggero per l'header
-    window.addEventListener('scroll', () => {
-      const scrolled = window.pageYOffset;
-      const header = document.querySelector('header');
-      if (header) {
-        header.style.transform = `translateY(${scrolled * 0.5}px)`;
-      }
-    });
-  </script>
 </body>
 
 </html>
