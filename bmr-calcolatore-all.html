@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="BMR">
+  <meta name="theme-color" content="#f5f2eb">
+  <title>Calcolatore BMR</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #1a1a2e;
+      --accent: #e8c547;
+      --bg: #f5f2eb;
+      --card-bg: #ffffff;
+      --text: #1a1a2e;
+      --text-light: #7a7a8c;
+      --border: #e2ddd4;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(232,197,71,.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(46,204,113,.06) 0%, transparent 40%);
+      color: var(--text);
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: max(env(safe-area-inset-top),32px) 20px max(env(safe-area-inset-bottom),32px);
+    }
+
+    .container { width: 100%; max-width: 480px; }
+
+    /* ── Header ── */
+    .header { margin-bottom: 28px; }
+    .header-label { font-size:.72rem; font-weight:600; letter-spacing:.15em; text-transform:uppercase; color:var(--text-light); margin-bottom:8px; }
+    h1 { font-family:'DM Serif Display',serif; font-size:2.2rem; line-height:1.15; font-weight:400; }
+    h1 span { color:var(--accent); }
+
+    /* ── Tab nav ── */
+    .tab-nav {
+      display: flex; background: #ede9e1; border-radius: 12px; padding: 4px; gap: 4px; margin-bottom: 18px;
+    }
+    .tab-nav button {
+      flex:1; padding:11px 8px; border:none; background:transparent; border-radius:9px;
+      font-family:'DM Sans',sans-serif; font-size:.85rem; font-weight:500; color:var(--text-light);
+      cursor:pointer; transition:all .2s; -webkit-tap-highlight-color:transparent;
+    }
+    .tab-nav button.active {
+      background:var(--card-bg); color:var(--text); box-shadow:0 1px 6px rgba(26,26,46,.08);
+    }
+
+    /* ── Card ── */
+    .card {
+      background:var(--card-bg); border-radius:20px; padding:28px 24px;
+      border:1px solid var(--border); box-shadow:0 4px 24px rgba(26,26,46,.06);
+    }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+
+    /* ── Forms ── */
+    .form-group { margin-bottom:20px; }
+    label { display:block; font-weight:500; font-size:.85rem; margin-bottom:8px; color:var(--text-light); letter-spacing:.01em; }
+
+    /* label con tooltip info */
+    .label-row { display:flex; align-items:center; gap:6px; margin-bottom:8px; }
+    .label-row label { margin-bottom:0; }
+    .info-btn {
+      width:17px; height:17px; border-radius:50%; border:1.5px solid var(--text-light);
+      background:transparent; color:var(--text-light); font-size:.65rem; font-weight:700;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+      flex-shrink:0; -webkit-tap-highlight-color:transparent; padding:0; font-family:'DM Sans',sans-serif;
+    }
+    .tooltip {
+      display:none; background:var(--primary); color:white; font-size:.75rem; line-height:1.5;
+      border-radius:8px; padding:10px 13px; margin-top:6px; margin-bottom:4px;
+      animation:slideUp .2s ease;
+    }
+    .tooltip.visible { display:block; }
+
+    input[type="number"], select {
+      width:100%; padding:14px 16px; border:1.5px solid var(--border);
+      border-radius:10px; font-family:'DM Sans',sans-serif; font-size:1rem;
+      color:var(--text); background-color:#fafaf8;
+      transition:border-color .2s, box-shadow .2s;
+      -webkit-appearance:none; appearance:none;
+    }
+    select {
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%237a7a8c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+      background-repeat:no-repeat; background-position:right 14px center;
+      background-size:16px; padding-right:44px; cursor:pointer;
+    }
+    input[type="number"]:focus, select:focus {
+      outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(232,197,71,.15);
+    }
+    input[type="number"]::placeholder { color:#c0bdb5; }
+
+    .divider { border:none; border-top:1.5px dashed var(--border); margin:22px 0; }
+    .section-label { font-size:.75rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--text-light); margin-bottom:14px; }
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+
+    /* ── Toggles ── */
+    .metodo-toggle, .obiettivo-toggle {
+      display:flex; background:#f0ede6; border-radius:10px; padding:4px; gap:4px;
+    }
+    .metodo-toggle input[type="radio"],
+    .obiettivo-toggle input[type="radio"] { display:none; }
+    .metodo-toggle label {
+      flex:1; text-align:center; padding:10px 8px; border-radius:7px;
+      font-size:.82rem; font-weight:500; color:var(--text-light);
+      cursor:pointer; transition:all .2s; margin:0;
+    }
+    .obiettivo-toggle label {
+      flex:1; text-align:center; padding:10px 6px; border-radius:7px;
+      font-size:.78rem; font-weight:500; color:var(--text-light);
+      cursor:pointer; transition:all .2s; margin:0; line-height:1.3;
+    }
+    .metodo-toggle input[type="radio"]:checked + label,
+    .obiettivo-toggle input[type="radio"]:checked + label {
+      background:var(--card-bg); color:var(--text); box-shadow:0 1px 6px rgba(26,26,46,.08);
+    }
+
+    /* ── Buttons ── */
+    .btn-primary {
+      width:100%; background-color:var(--primary); color:white; border:none;
+      padding:16px; border-radius:12px; font-family:'DM Sans',sans-serif;
+      font-size:1rem; font-weight:600; cursor:pointer;
+      transition:background-color .2s, transform .1s; margin-top:8px;
+      letter-spacing:.02em; -webkit-tap-highlight-color:transparent; touch-action:manipulation;
+    }
+    .btn-primary:active { transform:scale(.98); }
+
+    .pdf-btn {
+      width:100%; background:transparent; color:var(--text-light);
+      border:1.5px solid var(--border); padding:13px; border-radius:12px;
+      font-family:'DM Sans',sans-serif; font-size:.88rem; font-weight:500;
+      cursor:pointer; transition:all .2s; margin-top:4px;
+      letter-spacing:.02em; -webkit-tap-highlight-color:transparent; touch-action:manipulation;
+      display:flex; align-items:center; justify-content:center; gap:8px;
+    }
+    .pdf-btn:active { transform:scale(.98); background:#f0ede6; }
+
+    /* ── Risultati calorie ── */
+    .results { margin-top:18px; display:none; gap:12px; flex-direction:column; }
+    .results.visible { display:flex; }
+
+    .result-box {
+      padding:20px 22px; border-radius:14px; display:flex;
+      justify-content:space-between; align-items:center;
+      animation:slideUp .3s ease both;
+    }
+    .result-box.bmr  { background:var(--primary); color:white; }
+    .result-box.tdee { background:linear-gradient(135deg,#1a3a2a,#1f4d35); color:white; }
+    .result-box.goal { background:linear-gradient(135deg,#2a1a3a,#3d1f5a); color:white; }
+
+    .result-label { font-size:.78rem; font-weight:500; opacity:.7; text-transform:uppercase; letter-spacing:.08em; margin-bottom:4px; }
+    .result-formula { font-size:.72rem; opacity:.5; margin-top:2px; }
+    .result-value { font-family:'DM Serif Display',serif; font-size:2rem; font-weight:400; white-space:nowrap; margin-left:16px; }
+    .result-value span { font-family:'DM Sans',sans-serif; font-size:.85rem; opacity:.7; }
+
+    .info-tag {
+      background:rgba(232,197,71,.12); border:1px solid rgba(232,197,71,.3);
+      border-radius:8px; padding:10px 14px; font-size:.8rem; color:#7a6a1a; line-height:1.5;
+    }
+
+    /* Macros */
+    .macro-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; animation:slideUp .3s ease .18s both; }
+    .macro-box { background:#fafaf8; border:1px solid var(--border); border-radius:12px; padding:14px 12px; text-align:center; }
+    .macro-box .macro-label { font-size:.7rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--text-light); margin-bottom:6px; }
+    .macro-box .macro-value { font-family:'DM Serif Display',serif; font-size:1.5rem; color:var(--text); }
+    .macro-box .macro-unit { font-size:.72rem; color:var(--text-light); margin-top:2px; }
+
+    /* Acqua */
+    .acqua-box {
+      background:linear-gradient(135deg,#0f2a3a,#1a3f5a); color:white;
+      border-radius:14px; padding:18px 22px; display:flex;
+      justify-content:space-between; align-items:center;
+      animation:slideUp .3s ease .24s both;
+    }
+    .acqua-label { font-size:.78rem; font-weight:500; opacity:.7; text-transform:uppercase; letter-spacing:.08em; margin-bottom:4px; }
+    .acqua-value { font-family:'DM Serif Display',serif; font-size:2rem; white-space:nowrap; margin-left:16px; }
+    .acqua-value span { font-family:'DM Sans',sans-serif; font-size:.85rem; opacity:.7; }
+
+    /* ── Valutazione fisica risultati ── */
+    .val-results { margin-top:18px; display:none; gap:14px; flex-direction:column; }
+    .val-results.visible { display:flex; }
+
+    /* Categoria fisica */
+    .categoria-box {
+      border-radius:16px; padding:22px; text-align:center;
+      animation:slideUp .3s ease both;
+    }
+    .categoria-numero { font-size:.72rem; font-weight:600; letter-spacing:.15em; text-transform:uppercase; opacity:.6; margin-bottom:8px; }
+    .categoria-nome { font-family:'DM Serif Display',serif; font-size:1.8rem; margin-bottom:8px; }
+    .categoria-desc { font-size:.82rem; line-height:1.6; opacity:.85; }
+
+    /* Mini griglia indicatori */
+    .indicatori-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .indicatore-box {
+      background:#fafaf8; border:1px solid var(--border); border-radius:12px;
+      padding:14px; animation:slideUp .3s ease both;
+    }
+    .indicatore-box .ind-label { font-size:.68rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--text-light); margin-bottom:6px; }
+    .indicatore-box .ind-value { font-family:'DM Serif Display',serif; font-size:1.4rem; color:var(--text); }
+    .indicatore-box .ind-status { font-size:.72rem; margin-top:4px; font-weight:500; }
+    .ind-ok    { color:#1f8a4c; }
+    .ind-warn  { color:#c47a00; }
+    .ind-alert { color:#c0392b; }
+
+    /* Età biologica */
+    .eta-box {
+      border-radius:14px; padding:20px 22px; display:flex;
+      justify-content:space-between; align-items:center;
+      animation:slideUp .3s ease .2s both;
+    }
+    .eta-box .result-label { opacity:.7; }
+
+    @keyframes slideUp {
+      from { opacity:0; transform:translateY(10px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ── PRINT ── */
+    @media print {
+      @page { margin:18mm 16mm; }
+      body { background:white !important; background-image:none !important; padding:0 !important; display:block; }
+      .container { max-width:100%; }
+      .tab-nav, form, .divider, .pdf-btn { display:none !important; }
+      .card { box-shadow:none !important; border:none !important; padding:0 !important; }
+      .tab-panel { display:block !important; }
+      .results, .val-results { display:flex !important; }
+      .result-box.bmr  { background:#1a1a2e !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .result-box.tdee { background:#1a3a2a !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .result-box.goal { background:#2a1a3a !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .acqua-box       { background:#0f2a3a !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .macro-box, .indicatore-box { border:1px solid #ccc !important; }
+      .info-tag { background:#fdf8e1 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .header { margin-bottom:16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <p class="header-label">Strumento nutrizionale</p>
+    <h1>Il tuo <span>profilo</span> fisico</h1>
+  </div>
+
+  <!-- Tab navigation -->
+  <div class="tab-nav">
+    <button class="active" onclick="switchTab('calorie', this)">🔥 Calorie</button>
+    <button onclick="switchTab('valutazione', this)">📊 Valutazione fisica</button>
+  </div>
+
+  <div class="card">
+
+    <!-- ═══════════════════════════════════════
+         TAB 1 — CALORIE
+    ═══════════════════════════════════════ -->
+    <div class="tab-panel active" id="tab-calorie">
+      <form id="bmrForm" onsubmit="return false;">
+
+        <div class="form-group">
+          <label for="weight">Peso attuale (kg)</label>
+          <input type="number" id="weight" inputmode="decimal" step="0.1" min="30" max="250" placeholder="Es. 65" required>
+        </div>
+
+        <hr class="divider">
+
+        <div class="form-group">
+          <p class="section-label">Metodo di calcolo</p>
+          <div class="metodo-toggle">
+            <input type="radio" name="metodo" id="metodo-standard" value="no" checked>
+            <label for="metodo-standard">Dati standard</label>
+            <input type="radio" name="metodo" id="metodo-avanzato" value="yes">
+            <label for="metodo-avanzato">Ho la % massa grassa</label>
+          </div>
+        </div>
+
+        <div id="fatSection" style="display:none;">
+          <div class="form-group">
+            <label for="fatPercent">Percentuale massa grassa (%)</label>
+            <input type="number" id="fatPercent" inputmode="decimal" step="0.1" min="3" max="60" placeholder="Es. 19.1">
+          </div>
+        </div>
+
+        <div id="standardSection">
+          <div class="form-group">
+            <label for="gender">Sesso biologico</label>
+            <select id="gender">
+              <option value="male" selected>Uomo</option>
+              <option value="female">Donna</option>
+            </select>
+          </div>
+          <div class="grid-2">
+            <div class="form-group">
+              <label for="age">Età (anni)</label>
+              <input type="number" id="age" inputmode="numeric" min="15" max="100" placeholder="Es. 34">
+            </div>
+            <div class="form-group">
+              <label for="height">Altezza (cm)</label>
+              <input type="number" id="height" inputmode="numeric" min="100" max="250" placeholder="Es. 175">
+            </div>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Attività con tooltip -->
+        <div class="form-group">
+          <div class="label-row">
+            <label for="activity">Attività fisica (sport)</label>
+            <button type="button" class="info-btn" onclick="toggleTip('tip-activity')">?</button>
+          </div>
+          <div class="tooltip" id="tip-activity">
+            Considera solo le sessioni di allenamento vere e proprie: palestra, corsa, nuoto, ciclismo, sport di squadra. Non include il movimento quotidiano (quello è il NEAT sotto).
+          </div>
+          <select id="activity">
+            <option value="1.2">Sedentario — nessuno sport</option>
+            <option value="1.375" selected>Leggera — 1–3 gg/settimana</option>
+            <option value="1.55">Moderata — 3–5 gg/settimana</option>
+            <option value="1.725">Intensa — sport quotidiano o lavoro pesante</option>
+            <option value="1.9">Molto intensa — doppia sessione o lavoro fisico estremo</option>
+          </select>
+        </div>
+
+        <!-- NEAT con tooltip -->
+        <div class="form-group">
+          <div class="label-row">
+            <label for="neat">Movimento quotidiano (NEAT)</label>
+            <button type="button" class="info-btn" onclick="toggleTip('tip-neat')">?</button>
+          </div>
+          <div class="tooltip" id="tip-neat">
+            NEAT = Non-Exercise Activity Thermogenesis. Sono tutte le calorie che bruci fuori dall'allenamento: camminare, salire le scale, fare la spesa, stare in piedi. Spesso sottovalutato, può valere 100–300 kcal/giorno.
+          </div>
+          <select id="neat">
+            <option value="0">Seduto quasi sempre (ufficio, auto, divano)</option>
+            <option value="100" selected>Misto — qualche passeggiata, commissioni</option>
+            <option value="200">In piedi gran parte del giorno (commercio, insegnamento)</option>
+            <option value="300">Molto attivo — lavoro manuale, consegne, tante scale</option>
+          </select>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Obiettivo con tooltip -->
+        <div class="form-group">
+          <div class="label-row">
+            <p class="section-label" style="margin-bottom:0;">Obiettivo</p>
+            <button type="button" class="info-btn" onclick="toggleTip('tip-obiettivo')">?</button>
+          </div>
+          <div class="tooltip" id="tip-obiettivo">
+            <strong>Dimagrire −20%:</strong> mangi 20% in meno rispetto al tuo fabbisogno totale. Il corpo attinge alle riserve di grasso per coprire il deficit. È un taglio moderato e sostenibile nel tempo.<br><br>
+            <strong>Mantenimento:</strong> calorie pari al TDEE. Il peso resta stabile.<br><br>
+            <strong>Aumentare massa +10%:</strong> mangi il 10% in più del TDEE. Fornisce energia extra per la crescita muscolare, limitando l'accumulo di grasso.
+          </div>
+          <div class="obiettivo-toggle" style="margin-top:10px;">
+            <input type="radio" name="obiettivo" id="obj-perdita" value="-0.20">
+            <label for="obj-perdita">Dimagrire<br><small>−20%</small></label>
+            <input type="radio" name="obiettivo" id="obj-mantenimento" value="0" checked>
+            <label for="obj-mantenimento">Mantenimento<br><small>±0%</small></label>
+            <input type="radio" name="obiettivo" id="obj-massa" value="0.10">
+            <label for="obj-massa">Aumentare massa<br><small>+10%</small></label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" id="calcBtn">Calcola le calorie →</button>
+      </form>
+
+      <!-- Risultati calorie -->
+      <div class="results" id="resultsSection">
+        <div class="result-box bmr">
+          <div>
+            <p class="result-label">Metabolismo Basale (BMR)</p>
+            <p class="result-formula" id="formulaType">—</p>
+          </div>
+          <p class="result-value" id="bmrValue">— <span>kcal</span></p>
+        </div>
+
+        <div class="result-box tdee">
+          <div>
+            <p class="result-label">Fabbisogno Giornaliero (TDEE)</p>
+            <p class="result-formula">Sport + NEAT — il tuo "punto zero"</p>
+          </div>
+          <p class="result-value" id="tdeeValue">— <span>kcal</span></p>
+        </div>
+
+        <div class="result-box goal">
+          <div>
+            <p class="result-label" id="goalLabel">Obiettivo</p>
+            <p class="result-formula" id="goalDesc">—</p>
+          </div>
+          <p class="result-value" id="goalValue">— <span>kcal</span></p>
+        </div>
+
+        <div class="info-tag" id="goalExtra"></div>
+
+        <p class="section-label" style="margin-top:4px;">Macronutrienti consigliati</p>
+        <div class="macro-grid">
+          <div class="macro-box" onclick="toggleTip('tip-macro-p')" style="cursor:pointer;">
+            <p class="macro-label">Proteine <span style="opacity:.5;font-size:.65rem;">ⓘ</span></p>
+            <p class="macro-value" id="macroP">—</p>
+            <p class="macro-unit">g / giorno</p>
+          </div>
+          <div class="macro-box" onclick="toggleTip('tip-macro-c')" style="cursor:pointer;">
+            <p class="macro-label">Carboidrati <span style="opacity:.5;font-size:.65rem;">ⓘ</span></p>
+            <p class="macro-value" id="macroC">—</p>
+            <p class="macro-unit">g / giorno</p>
+          </div>
+          <div class="macro-box" onclick="toggleTip('tip-macro-f')" style="cursor:pointer;">
+            <p class="macro-label">Grassi <span style="opacity:.5;font-size:.65rem;">ⓘ</span></p>
+            <p class="macro-value" id="macroF">—</p>
+            <p class="macro-unit">g / giorno</p>
+          </div>
+        </div>
+        <div class="tooltip" id="tip-macro-p" style="margin-top:6px;">
+          <strong>Proteine</strong> — costruiscono e preservano la massa muscolare. Il fabbisogno aumenta in fase di dimagrimento (2.2 g/kg massa magra) per evitare la perdita muscolare, e in fase di massa (2.4 g/kg) per supportare la crescita. Fonti ottimali: carne magra, pesce, uova, legumi, latticini magri, tofu.
+        </div>
+        <div class="tooltip" id="tip-macro-c" style="margin-top:6px;">
+          <strong>Carboidrati</strong> — la principale fonte di energia, soprattutto per l'allenamento. Vengono ridotti in fase di deficit calorico e aumentati in fase di massa. Preferisci carboidrati complessi: riso, pasta integrale, avena, patate dolci, legumi. Evita zuccheri semplici fuori dall'attività fisica.
+        </div>
+        <div class="tooltip" id="tip-macro-f" style="margin-top:6px;">
+          <strong>Grassi</strong> — essenziali per gli ormoni, il sistema nervoso e l'assorbimento delle vitamine liposolubili (A, D, E, K). Il 25% delle calorie è una quota equilibrata. Fonti di qualità: olio d'oliva extravergine, avocado, frutta secca, pesce azzurro, uova intere.
+        </div>
+
+        <div class="acqua-box">
+          <div>
+            <p class="acqua-label">💧 Acqua consigliata</p>
+            <p class="result-formula" style="opacity:.5;font-size:.72rem;margin-top:2px;">33 ml × kg di peso</p>
+          </div>
+          <p class="acqua-value" id="acquaValue">— <span>litri</span></p>
+        </div>
+
+        <div class="info-tag" id="infoTag"></div>
+
+        <button class="pdf-btn" id="pdfBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Salva come PDF
+        </button>
+      </div>
+    </div><!-- /tab-calorie -->
+
+
+    <!-- ═══════════════════════════════════════
+         TAB 2 — VALUTAZIONE FISICA
+    ═══════════════════════════════════════ -->
+    <div class="tab-panel" id="tab-valutazione">
+      <form id="valForm" onsubmit="return false;">
+
+        <p class="section-label">Dati anagrafici e corporei</p>
+
+        <div class="form-group">
+          <label for="v-peso">Peso (kg)</label>
+          <input type="number" id="v-peso" inputmode="decimal" step="0.1" min="30" max="250" placeholder="Es. 72">
+        </div>
+
+        <div class="form-group">
+          <label for="v-altezza">Altezza (cm)</label>
+          <input type="number" id="v-altezza" inputmode="numeric" min="100" max="250" placeholder="Es. 175">
+        </div>
+
+        <div class="form-group">
+          <label for="v-sesso">Sesso biologico</label>
+          <select id="v-sesso">
+            <option value="male" selected>Uomo</option>
+            <option value="female">Donna</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="v-eta">Età anagrafica (anni)</label>
+          <input type="number" id="v-eta" inputmode="numeric" min="15" max="100" placeholder="Es. 34">
+        </div>
+
+        <!-- BMR dalla scheda Calorie -->
+        <div class="form-group">
+          <div class="label-row">
+            <label for="v-bmr">Metabolismo basale — BMR (kcal)</label>
+            <button type="button" class="info-btn" onclick="toggleTip('tip-v-bmr')">?</button>
+          </div>
+          <div class="tooltip" id="tip-v-bmr">
+            Inserisci il valore BMR calcolato nella scheda Calorie. Viene usato per stimare la tua età metabolica e per confrontare il tuo profilo con i valori medi attesi. Se non lo hai ancora calcolato, vai prima nella scheda 🔥 Calorie.
+          </div>
+          <input type="number" id="v-bmr" inputmode="numeric" min="800" max="5000" placeholder="Es. 1750 (dalla scheda Calorie)">
+        </div>
+
+        <hr class="divider">
+        <p class="section-label">Dati dalla bilancia</p>
+
+        <!-- Massa ossea -->
+        <div class="form-group">
+          <div class="label-row">
+            <label for="v-ossea">Massa ossea (kg)</label>
+            <button type="button" class="info-btn" onclick="toggleTip('tip-ossea')">?</button>
+          </div>
+          <div class="tooltip" id="tip-ossea">
+            Il peso dello scheletro. Non cambia rapidamente con la dieta, ma è un indicatore di densità ossea. Valori normali: uomo ~3.0–4.0 kg, donna ~2.0–3.0 kg (dipende dall'altezza e dal peso).
+          </div>
+          <input type="number" id="v-ossea" inputmode="decimal" step="0.1" min="0.5" max="8" placeholder="Es. 3.2">
+        </div>
+
+        <!-- Grasso viscerale -->
+        <div class="form-group">
+          <div class="label-row">
+            <label for="v-viscerale">Grasso viscerale (livello 1–30)</label>
+            <button type="button" class="info-btn" onclick="toggleTip('tip-viscerale')">?</button>
+          </div>
+          <div class="tooltip" id="tip-viscerale">
+            Il grasso che avvolge gli organi interni. È il più pericoloso per la salute cardiovascolare e metabolica. La bilancia lo esprime su scala 1–30: livello 1–9 = sano, 10–14 = alto, 15+ = molto alto.
+          </div>
+          <input type="number" id="v-viscerale" inputmode="numeric" min="1" max="30" placeholder="Es. 7">
+        </div>
+
+        <!-- IMC dalla bilancia -->
+        <div class="form-group">
+          <div class="label-row">
+            <label for="v-imc">IMC — valore dalla bilancia</label>
+            <button type="button" class="info-btn" onclick="toggleTip('tip-imc')">?</button>
+          </div>
+          <div class="tooltip" id="tip-imc">
+            L'Indice di Massa Corporea misura il rapporto tra peso e altezza (kg/m²). Inserisci direttamente il valore che leggi sulla bilancia. Se non ce l'hai, lascia vuoto: lo calcolo io da peso e altezza. Scala: sotto 18.5 = sottopeso, 18.5–24.9 = normopeso, 25–29.9 = sovrappeso, 30+ = obesità.
+          </div>
+          <input type="number" id="v-imc" inputmode="decimal" step="0.1" min="10" max="60" placeholder="Es. 22.4 (opzionale)">
+        </div>
+
+        <!-- Massa grassa -->
+        <div class="form-group">
+          <div class="label-row">
+            <label for="v-grasso">Massa grassa (%)</label>
+            <button type="button" class="info-btn" onclick="toggleTip('tip-grasso')">?</button>
+          </div>
+          <div class="tooltip" id="tip-grasso">
+            La percentuale del tuo peso costituita da tessuto adiposo. Valori sani: uomo 10–20%, donna 18–28%. Sopra questi range si parla di sovrappeso o obesità anche con un peso normale sulla bilancia.
+          </div>
+          <input type="number" id="v-grasso" inputmode="decimal" step="0.1" min="3" max="60" placeholder="Es. 19.1">
+        </div>
+
+        <!-- Acqua corporea -->
+        <div class="form-group">
+          <div class="label-row">
+            <label for="v-acqua">Acqua corporea (%)</label>
+            <button type="button" class="info-btn" onclick="toggleTip('tip-acqua-corp')">?</button>
+          </div>
+          <div class="tooltip" id="tip-acqua-corp">
+            La percentuale del peso corporeo costituita da acqua. Valori normali: uomo 50–65%, donna 45–60%. Un valore basso può indicare disidratazione o eccesso di grasso (il tessuto adiposo contiene poca acqua). Un valore alto è generalmente positivo.
+          </div>
+          <input type="number" id="v-acqua" inputmode="decimal" step="0.1" min="20" max="80" placeholder="Es. 58.4">
+        </div>
+
+        <!-- Proteine -->
+        <div class="form-group">
+          <div class="label-row">
+            <label for="v-proteine">Proteine corporee (%)</label>
+            <button type="button" class="info-btn" onclick="toggleTip('tip-proteine')">?</button>
+          </div>
+          <div class="tooltip" id="tip-proteine">
+            La percentuale del peso corporeo costituita da proteine (principalmente nei muscoli). Il valore sano è ≥17% per gli uomini e ≥16% per le donne. Sotto questi valori si parla di carenza proteica muscolare.
+          </div>
+          <input type="number" id="v-proteine" inputmode="decimal" step="0.1" min="5" max="30" placeholder="Es. 18.5">
+        </div>
+
+        <!-- Età metabolica — calcolata automaticamente -->
+        <div class="form-group">
+          <div class="label-row">
+            <label>Età metabolica</label>
+            <button type="button" class="info-btn" onclick="toggleTip('tip-eta-corpo')">?</button>
+          </div>
+          <div class="tooltip" id="tip-eta-corpo">
+            L'età metabolica viene calcolata confrontando il tuo BMR reale con i valori medi attesi per la tua età e sesso. Se risulta inferiore alla tua età anagrafica, il tuo metabolismo è più efficiente della media. Non è identica al valore proprietario della bilancia, ma è una stima scientificamente fondata.
+          </div>
+          <div style="padding:14px 16px; background:#fafaf8; border:1.5px solid var(--border); border-radius:10px; font-size:.9rem; color:var(--text-light);">
+            Calcolata automaticamente dai tuoi dati →
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" id="valBtn">Valuta la composizione →</button>
+      </form>
+
+      <!-- Risultati valutazione -->
+      <div class="val-results" id="valResultsSection">
+
+        <!-- Categoria fisica -->
+        <div class="categoria-box" id="categoriaBox">
+          <p class="categoria-numero" id="catNumero">—</p>
+          <p class="categoria-nome" id="catNome">—</p>
+          <p class="categoria-desc" id="catDesc">—</p>
+        </div>
+
+        <!-- IMC -->
+        <div class="indicatori-grid">
+          <div class="indicatore-box">
+            <p class="ind-label">IMC (BMI)</p>
+            <p class="ind-value" id="imcValue">—</p>
+            <p class="ind-status" id="imcStatus">—</p>
+          </div>
+          <div class="indicatore-box">
+            <p class="ind-label">Grasso viscerale</p>
+            <p class="ind-value" id="viscValue">—</p>
+            <p class="ind-status" id="viscStatus">—</p>
+          </div>
+          <div class="indicatore-box">
+            <p class="ind-label">Massa grassa</p>
+            <p class="ind-value" id="grassoValue">—</p>
+            <p class="ind-status" id="grassoStatus">—</p>
+          </div>
+          <div class="indicatore-box">
+            <p class="ind-label">Proteine corporee</p>
+            <p class="ind-value" id="protValue">—</p>
+            <p class="ind-status" id="protStatus">—</p>
+          </div>
+          <div class="indicatore-box">
+            <p class="ind-label">Massa ossea</p>
+            <p class="ind-value" id="osseaValue">—</p>
+            <p class="ind-status" id="osseaStatus">—</p>
+          </div>
+          <div class="indicatore-box">
+            <p class="ind-label">Massa magra</p>
+            <p class="ind-value" id="magraValue">—</p>
+            <p class="ind-status" id="magraStatus">—</p>
+          </div>
+        </div>
+
+        <!-- Età biologica -->
+        <div class="eta-box" id="etaBox">
+          <div>
+            <p class="result-label">Età del corpo vs. età anagrafica</p>
+            <p class="result-formula" id="etaDesc">—</p>
+          </div>
+          <p class="result-value" id="etaDiff">—</p>
+        </div>
+
+        <!-- Peso ideale -->
+        <p class="section-label" style="margin-top:4px;">Peso ideale</p>
+        <div class="indicatori-grid">
+          <div class="indicatore-box" style="grid-column:span 1;">
+            <p class="ind-label">Formula di Devine</p>
+            <p class="ind-value" id="pesoDevineValue">—</p>
+            <p class="ind-status" id="pesoDevineStatus" style="color:var(--text-light);font-size:.7rem;line-height:1.4;">—</p>
+          </div>
+          <div class="indicatore-box" style="grid-column:span 1;">
+            <p class="ind-label">Range IMC sano</p>
+            <p class="ind-value" id="pesoImcValue">—</p>
+            <p class="ind-status" id="pesoImcStatus" style="color:var(--text-light);font-size:.7rem;line-height:1.4;">—</p>
+          </div>
+        </div>
+        <div class="info-tag" id="pesoIdealeTip" style="display:none;"></div>
+
+        <button class="pdf-btn" id="pdfBtn2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Salva come PDF
+        </button>
+      </div>
+    </div><!-- /tab-valutazione -->
+
+  </div><!-- /card -->
+</div><!-- /container -->
+
+<script>
+/* ══════════════════════════════
+   TABS
+══════════════════════════════ */
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.tab-nav button').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ══════════════════════════════
+   TOOLTIP
+══════════════════════════════ */
+function toggleTip(id) {
+  var el = document.getElementById(id);
+  el.classList.toggle('visible');
+}
+
+/* ══════════════════════════════
+   TAB 1 — CALORIE
+══════════════════════════════ */
+var fatSection      = document.getElementById('fatSection');
+var standardSection = document.getElementById('standardSection');
+var fatInput        = document.getElementById('fatPercent');
+
+document.querySelectorAll('input[name="metodo"]').forEach(function(r) {
+  r.addEventListener('change', function() {
+    if (this.value === 'yes') {
+      fatSection.style.display      = 'block';
+      standardSection.style.display = 'none';
+      fatInput.required = true;
+    } else {
+      fatSection.style.display      = 'none';
+      standardSection.style.display = 'block';
+      fatInput.required = false;
+      fatInput.value    = '';
+    }
+  });
+});
+
+document.getElementById('calcBtn').addEventListener('click', function() {
+  var weight   = parseFloat(document.getElementById('weight').value);
+  var metodo   = document.querySelector('input[name="metodo"]:checked').value;
+  var actMult  = parseFloat(document.getElementById('activity').value);
+  var neatKcal = parseFloat(document.getElementById('neat').value);
+  var objDelta = parseFloat(document.querySelector('input[name="obiettivo"]:checked').value);
+
+  if (isNaN(weight)) { alert('Inserisci il tuo peso.'); return; }
+
+  var bmr = 0, leanMass = weight, formulaUsata = '', infoText = '';
+
+  if (metodo === 'yes') {
+    var fatPct = parseFloat(fatInput.value);
+    if (isNaN(fatPct) || fatPct <= 0) { alert('Inserisci una percentuale di massa grassa valida.'); return; }
+    leanMass     = weight * (1 - fatPct / 100);
+    bmr          = 370 + 21.6 * leanMass;
+    formulaUsata = 'Katch-McArdle';
+    infoText     = 'Calcolo basato sulla massa magra reale: il metodo più preciso se conosci la tua composizione corporea.';
+  } else {
+    var gender = document.getElementById('gender').value;
+    var age    = parseInt(document.getElementById('age').value);
+    var height = parseInt(document.getElementById('height').value);
+    if (isNaN(age) || isNaN(height)) { alert('Inserisci età e altezza per procedere.'); return; }
+    bmr = gender === 'male'
+      ? (10 * weight) + (6.25 * height) - (5 * age) + 5
+      : (10 * weight) + (6.25 * height) - (5 * age) - 161;
+    formulaUsata = 'Mifflin-St. Jeor';
+    infoText     = 'Stima standard. Per maggiore precisione, usa la % di massa grassa dalla tua bilancia.';
+  }
+
+  var tdee     = bmr * actMult + neatKcal;
+  var goalKcal = Math.round(tdee * (1 + objDelta));
+
+  var goalLbl = '', goalDesc = '', goalExtra = '';
+  if (objDelta < 0) {
+    goalLbl   = 'Calorie per dimagrire';
+    goalDesc  = 'Deficit del 20% sul TDEE';
+    goalExtra = 'Significa mangiare ' + Math.round(tdee - goalKcal) + ' kcal in meno al giorno rispetto al tuo fabbisogno. Il corpo copre questo deficit attingendo alle riserve di grasso.';
+  } else if (objDelta > 0) {
+    goalLbl   = 'Calorie per aumentare la massa';
+    goalDesc  = 'Surplus del 10% sul TDEE';
+    goalExtra = 'Significa mangiare ' + Math.round(goalKcal - tdee) + ' kcal in più al giorno. Fornisce energia extra per la crescita muscolare, limitando l\'accumulo di grasso.';
+  } else {
+    goalLbl   = 'Calorie di mantenimento';
+    goalDesc  = 'Pari al TDEE — peso stabile';
+    goalExtra = 'Con queste calorie il tuo peso rimane stabile nel tempo, assumendo che l\'attività fisica resti costante.';
+  }
+
+  var protMult = objDelta < 0 ? 2.2 : (objDelta > 0 ? 2.4 : 2.0);
+  var prot     = Math.round(leanMass * protMult);
+  var fat      = Math.round((goalKcal * 0.25) / 9);
+  var carb     = Math.round((goalKcal - prot * 4 - fat * 9) / 4);
+  var acqua    = (weight * 33 / 1000).toFixed(1);
+
+  document.getElementById('formulaType').textContent  = formulaUsata;
+  document.getElementById('bmrValue').innerHTML       = Math.round(bmr)  + ' <span>kcal</span>';
+  document.getElementById('tdeeValue').innerHTML      = Math.round(tdee) + ' <span>kcal</span>';
+  document.getElementById('goalLabel').textContent    = goalLbl;
+  document.getElementById('goalDesc').textContent     = goalDesc;
+  document.getElementById('goalValue').innerHTML      = goalKcal + ' <span>kcal</span>';
+  document.getElementById('goalExtra').textContent    = goalExtra;
+  document.getElementById('macroP').textContent       = prot;
+  document.getElementById('macroC').textContent       = Math.max(0, carb);
+  document.getElementById('macroF').textContent       = fat;
+  document.getElementById('acquaValue').innerHTML     = acqua + ' <span>litri</span>';
+  document.getElementById('infoTag').textContent      = infoText;
+
+  var results = document.getElementById('resultsSection');
+  results.classList.add('visible');
+  setTimeout(function(){ results.scrollIntoView({ behavior:'smooth', block:'nearest' }); }, 50);
+});
+
+/* ══════════════════════════════
+   TAB 2 — VALUTAZIONE FISICA
+══════════════════════════════ */
+
+/* Categorie fisiche */
+/* Muscolo relativo = massa magra / peso * 100 */
+var CATEGORIE = [
+  /* 1 */ { n:1,  nome:'Grave Obesità',    desc:'Il peso è molto elevato ed è composto prevalentemente da grasso. È importante intervenire con il supporto di un medico o nutrizionista.', bg:'#3d0000', fg:'#fff', grassoMin:35, grassoMax:99, muscoloMin:0,  muscoloMax:99 },
+  /* 2 */ { n:2,  nome:'Obesità',          desc:'Il peso è alto ed è composto da una quantità eccessiva di grasso corporeo. La massa muscolare è nella norma o bassa.', bg:'#6b1a1a', fg:'#fff', grassoMin:28, grassoMax:34.9, muscoloMin:0, muscoloMax:99 },
+  /* 3 */ { n:3,  nome:'Sovrappeso',       desc:'Il peso è superiore alla norma con una percentuale di grasso elevata. Una maggiore attività fisica e una dieta equilibrata possono aiutare.', bg:'#8b3a1a', fg:'#fff', grassoMin:23, grassoMax:27.9, muscoloMin:0, muscoloMax:99 },
+  /* 4 */ { n:4,  nome:'Sotto Esercizio',  desc:'Il peso è nella norma ma la massa muscolare è bassa rispetto al grasso. Più allenamento con i pesi aiuterebbe.', bg:'#5a4a00', fg:'#fff', grassoMin:20, grassoMax:27.9, muscoloMin:0, muscoloMax:64.9 },
+  /* 5 */ { n:5,  nome:'Standard',         desc:'Composizione corporea equilibrata. Peso, grasso e muscoli sono in un rapporto sano. Mantieni lo stile di vita attuale.', bg:'#1a3a2a', fg:'#fff', grassoMin:10, grassoMax:22.9, muscoloMin:65, muscoloMax:74.9 },
+  /* 6 */ { n:6,  nome:'Muscolo Standard', desc:'Buona massa muscolare con una percentuale di grasso nella norma. Composizione fisica sana e atletica.', bg:'#1a3a2a', fg:'#fff', grassoMin:8, grassoMax:19.9, muscoloMin:75, muscoloMax:79.9 },
+  /* 7 */ { n:7,  nome:'Molto Sottile',    desc:'Il peso è basso con poca massa grassa ma anche poca massa muscolare. Potrebbe essere utile aumentare l\'apporto calorico e proteico.', bg:'#0f2a3a', fg:'#fff', grassoMin:3, grassoMax:11.9, muscoloMin:0, muscoloMax:64.9 },
+  /* 8 */ { n:8,  nome:'Atletico Magro',   desc:'Il peso è basso ma con un indice di grasso sano e una buona massa muscolare. Fisico tonico ed efficiente.', bg:'#1a1a2e', fg:'#fff', grassoMin:3, grassoMax:14.9, muscoloMin:75, muscoloMax:84.9 },
+  /* 9 */ { n:9,  nome:'Atleta',           desc:'Composizione fisica eccellente: massa grassa molto bassa e massa muscolare molto alta. Risultato di allenamento costante e alimentazione ottimale.', bg:'linear-gradient(135deg,#1a1a2e,#0f3a2a)', fg:'#fff', grassoMin:3, grassoMax:11.9, muscoloMin:80, muscoloMax:99 }
+];
+
+function classificaOmron(grassoPct, muscoloRel) {
+  /* Prima cerca una corrispondenza stretta */
+  for (var i = 0; i < CATEGORIE.length; i++) {
+    var c = CATEGORIE[i];
+    if (grassoPct >= c.grassoMin && grassoPct <= c.grassoMax &&
+        muscoloRel >= c.muscoloMin && muscoloRel <= c.muscoloMax) {
+      return c;
+    }
+  }
+  /* Fallback: cerca per solo grasso */
+  if (grassoPct >= 35)  return CATEGORIE[0];
+  if (grassoPct >= 28)  return CATEGORIE[1];
+  if (grassoPct >= 23)  return CATEGORIE[2];
+  if (grassoPct >= 20)  return CATEGORIE[3];
+  if (muscoloRel >= 80) return CATEGORIE[8];
+  if (muscoloRel >= 75) return CATEGORIE[7];
+  return CATEGORIE[4];
+}
+
+function statoIMC(imc) {
+  if (imc < 18.5) return { testo:'Sottopeso', cls:'ind-warn' };
+  if (imc < 25)   return { testo:'Normopeso ✓', cls:'ind-ok' };
+  if (imc < 30)   return { testo:'Sovrappeso', cls:'ind-warn' };
+  return { testo:'Obesità', cls:'ind-alert' };
+}
+
+function statoGrasso(pct, sesso) {
+  /* valori sani: uomo 10-20%, donna 18-28% */
+  var ok = sesso === 'male' ? (pct >= 10 && pct <= 20) : (pct >= 18 && pct <= 28);
+  var low = pct < (sesso === 'male' ? 10 : 18);
+  if (ok)  return { testo:'Nella norma ✓', cls:'ind-ok' };
+  if (low) return { testo:'Troppo basso', cls:'ind-warn' };
+  return { testo:'Elevato', cls:'ind-alert' };
+}
+
+function statoViscerale(liv) {
+  if (liv <= 9)  return { testo:'Sano ✓', cls:'ind-ok' };
+  if (liv <= 14) return { testo:'Alto — attenzione', cls:'ind-warn' };
+  return { testo:'Molto alto', cls:'ind-alert' };
+}
+
+function statoProteine(pct, sesso) {
+  var soglia = sesso === 'male' ? 17 : 16;
+  if (pct >= soglia) return { testo:'Nella norma ✓', cls:'ind-ok' };
+  return { testo:'Sotto la norma', cls:'ind-warn' };
+}
+
+function statoOssea(kg, peso, sesso) {
+  /* riferimento approssimativo: ~4.2% del peso per uomini, ~3.8% per donne */
+  var ref = peso * (sesso === 'male' ? 0.042 : 0.038);
+  if (kg >= ref * 0.9) return { testo:'Nella norma ✓', cls:'ind-ok' };
+  return { testo:'Sotto la norma', cls:'ind-warn' };
+}
+
+document.getElementById('valBtn').addEventListener('click', function() {
+  var peso       = parseFloat(document.getElementById('v-peso').value);
+  var altezza    = parseFloat(document.getElementById('v-altezza').value);
+  var etaAnag    = parseInt(document.getElementById('v-eta').value);
+  var sesso      = document.getElementById('v-sesso').value;
+  var imcManuale = parseFloat(document.getElementById('v-imc').value);
+  var grasso     = parseFloat(document.getElementById('v-grasso').value);
+  var viscerale  = parseFloat(document.getElementById('v-viscerale').value);
+  var ossea      = parseFloat(document.getElementById('v-ossea').value);
+  var proteine   = parseFloat(document.getElementById('v-proteine').value);
+
+  if (isNaN(peso) || isNaN(altezza) || isNaN(grasso)) {
+    alert('Inserisci almeno peso, altezza e percentuale di massa grassa.'); return;
+  }
+
+  /* IMC: usa manuale se disponibile, altrimenti calcola */
+  var imc = !isNaN(imcManuale) ? imcManuale : (peso / Math.pow(altezza / 100, 2));
+
+  /* Massa magra */
+  var massaMagra = peso * (1 - grasso / 100);
+  /* Muscolo relativo proxy */
+  var muscoloRel = (massaMagra / peso) * 100;
+
+  /* ── Età metabolica (calcolata) ──
+     Stima il BMR attuale con Katch-McArdle, poi trova l'età in cui
+     il BMR medio di riferimento (Mifflin) coincide con quel valore.
+     BMR_ref maschio  = 10*peso_ref + 6.25*altezza - 5*età + 5
+     BMR_ref femmina  = 10*peso_ref + 6.25*altezza - 5*età - 161
+     Usiamo peso attuale come peso_ref e risolviamo per età.
+  */
+  var bmrAttuale = 370 + 21.6 * massaMagra;
+  var etaMetab;
+  if (sesso === 'male') {
+    etaMetab = Math.round(((10 * peso + 6.25 * altezza + 5) - bmrAttuale) / 5);
+  } else {
+    etaMetab = Math.round(((10 * peso + 6.25 * altezza - 161) - bmrAttuale) / 5);
+  }
+  etaMetab = Math.max(10, Math.min(99, etaMetab));
+
+  /* Classificazione */
+  var cat = classificaOmron(grasso, muscoloRel);
+
+  /* Categoria box */
+  var catBox = document.getElementById('categoriaBox');
+  catBox.style.background = cat.bg;
+  catBox.style.color      = cat.fg;
+  document.getElementById('catNumero').textContent = cat.n + '.';
+  document.getElementById('catNome').textContent   = cat.nome;
+  document.getElementById('catDesc').textContent   = cat.desc;
+
+  /* IMC */
+  var imcSt = statoIMC(imc);
+  document.getElementById('imcValue').textContent  = imc.toFixed(1);
+  document.getElementById('imcStatus').textContent = imcSt.testo;
+  document.getElementById('imcStatus').className   = 'ind-status ' + imcSt.cls;
+
+  /* Grasso viscerale */
+  if (!isNaN(viscerale)) {
+    var viscSt = statoViscerale(viscerale);
+    document.getElementById('viscValue').textContent  = viscerale;
+    document.getElementById('viscStatus').textContent = viscSt.testo;
+    document.getElementById('viscStatus').className   = 'ind-status ' + viscSt.cls;
+  }
+
+  /* Massa grassa */
+  var grassoSt = statoGrasso(grasso, sesso);
+  document.getElementById('grassoValue').textContent  = grasso + '%';
+  document.getElementById('grassoStatus').textContent = grassoSt.testo;
+  document.getElementById('grassoStatus').className   = 'ind-status ' + grassoSt.cls;
+
+  /* Proteine */
+  if (!isNaN(proteine)) {
+    var protSt = statoProteine(proteine, sesso);
+    document.getElementById('protValue').textContent  = proteine + '%';
+    document.getElementById('protStatus').textContent = protSt.testo;
+    document.getElementById('protStatus').className   = 'ind-status ' + protSt.cls;
+  }
+
+  /* Massa ossea */
+  if (!isNaN(ossea)) {
+    var osseaSt = statoOssea(ossea, peso, sesso);
+    document.getElementById('osseaValue').textContent  = ossea + ' kg';
+    document.getElementById('osseaStatus').textContent = osseaSt.testo;
+    document.getElementById('osseaStatus').className   = 'ind-status ' + osseaSt.cls;
+  }
+
+  /* Massa magra */
+  document.getElementById('magraValue').textContent  = massaMagra.toFixed(1) + ' kg';
+  document.getElementById('magraStatus').textContent = (grasso <= (sesso === 'male' ? 20 : 28)) ? 'Nella norma ✓' : 'Grasso elevato';
+  document.getElementById('magraStatus').className   = 'ind-status ' + ((grasso <= (sesso === 'male' ? 20 : 28)) ? 'ind-ok' : 'ind-warn');
+
+  /* Età metabolica */
+  if (!isNaN(etaAnag)) {
+    var diff    = etaMetab - etaAnag;
+    var etaBox  = document.getElementById('etaBox');
+    var diffTxt = diff === 0 ? 'Pari alla tua età anagrafica'
+                : diff < 0  ? Math.abs(diff) + ' anni più giovane della tua età anagrafica 🎉'
+                :              diff + ' anni più vecchio della tua età anagrafica';
+    etaBox.style.background = diff <= 0 ? 'linear-gradient(135deg,#1a3a2a,#1f4d35)' : 'linear-gradient(135deg,#3a1a1a,#5a2020)';
+    etaBox.style.color      = 'white';
+    document.getElementById('etaDesc').textContent  = diffTxt;
+    document.getElementById('etaDiff').innerHTML    = etaMetab + ' <span>anni</span>';
+  }
+
+  /* ── Peso ideale ──
+     Devine: maschio = 50 + 2.3 × (altezza_pollici - 60)
+             femmina = 45.5 + 2.3 × (altezza_pollici - 60)
+     Range IMC sano: peso_min = 18.5 × h², peso_max = 24.9 × h²
+  */
+  var hMetri   = altezza / 100;
+  var hPollici = altezza / 2.54;
+  var devine   = sesso === 'male'
+                  ? 50   + 2.3 * (hPollici - 60)
+                  : 45.5 + 2.3 * (hPollici - 60);
+  devine = Math.max(30, devine);
+  var pesoMin  = Math.round(18.5 * hMetri * hMetri * 10) / 10;
+  var pesoMax  = Math.round(24.9 * hMetri * hMetri * 10) / 10;
+
+  var diffDevine = Math.round((peso - devine) * 10) / 10;
+  var devineNote = diffDevine === 0 ? 'Sei al peso ideale ✓'
+                 : diffDevine > 0  ? '−' + diffDevine + ' kg per raggiungerlo'
+                 :                   '+' + Math.abs(diffDevine) + ' kg per raggiungerlo';
+
+  var inRangeImc = peso >= pesoMin && peso <= pesoMax;
+  var imcNote    = inRangeImc ? 'Sei nel range sano ✓'
+                 : peso < pesoMin ? 'Sei ' + (pesoMin - peso).toFixed(1) + ' kg sotto il range'
+                 :                  'Sei ' + (peso - pesoMax).toFixed(1) + ' kg sopra il range';
+
+  document.getElementById('pesoDevineValue').textContent  = devine.toFixed(1) + ' kg';
+  document.getElementById('pesoDevineStatus').textContent = devineNote;
+  document.getElementById('pesoDevineStatus').style.color = diffDevine === 0 ? '#1f8a4c' : (diffDevine > 0 ? '#c47a00' : '#1f8a4c');
+
+  document.getElementById('pesoImcValue').textContent  = pesoMin + '–' + pesoMax + ' kg';
+  document.getElementById('pesoImcStatus').textContent = imcNote;
+  document.getElementById('pesoImcStatus').style.color = inRangeImc ? '#1f8a4c' : '#c47a00';
+
+  var tipEl = document.getElementById('pesoIdealeTip');
+  tipEl.style.display  = 'block';
+  tipEl.textContent    = 'Devine stima un peso target preciso basato sull\'altezza. Il range IMC indica invece l\'intervallo sano 18.5–24.9. I due valori si integrano: Devine è un punto, l\'IMC è un margine.';
+
+  var valResults = document.getElementById('valResultsSection');
+  valResults.classList.add('visible');
+  setTimeout(function(){ valResults.scrollIntoView({ behavior:'smooth', block:'nearest' }); }, 50);
+});
+
+/* PDF */
+document.getElementById('pdfBtn').addEventListener('click', function(){ window.print(); });
+document.getElementById('pdfBtn2').addEventListener('click', function(){ window.print(); });
+</script>
+</body>
+</html>
