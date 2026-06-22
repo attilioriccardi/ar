@@ -27,6 +27,119 @@
   <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
 
+<!-- Banner Concerti -->
+<style>
+  #concert-banner {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 300px;
+    background: #1a1a1a;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    z-index: 9999;
+    transform: translateY(120%);
+    opacity: 0;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+  }
+  #concert-banner.visible {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  .cb-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: #111;
+  }
+  .cb-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: #bbb;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .cb-close {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #333;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .cb-body {
+    padding: 12px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .cb-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #252525;
+  }
+  .cb-date {
+    text-align: center;
+    min-width: 42px;
+  }
+  .cb-day {
+    font-size: 20px;
+    font-weight: 500;
+    color: #ffde59;
+    line-height: 1;
+  }
+  .cb-month {
+    font-size: 10px;
+    color: #ffde59;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+  .cb-info { flex: 1; }
+  .cb-venue {
+    font-size: 13px;
+    font-weight: 500;
+    color: #eee;
+  }
+  .cb-city {
+    font-size: 11px;
+    color: #888;
+    margin-top: 2px;
+  }
+  .cb-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ffde59;
+    flex-shrink: 0;
+  }
+  .cb-footer {
+    padding: 0 16px 14px;
+  }
+  .cb-cta {
+    display: block;
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+    text-decoration: none;
+    padding-top: 8px;
+    border-top: 0.5px solid #333;
+  }
+  .cb-cta:hover { color: #ffde59; }
+</style>
+  
 </head>
 
 <body class="index-page">
@@ -144,7 +257,49 @@
 
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
+<!-- Banner Concerti -->
+<div id="concert-banner">
+  <div class="cb-header">
+    <span class="cb-title">🎸 Live dates</span>
+    <button class="cb-close" onclick="document.getElementById('concert-banner').remove()">✕</button>
+  </div>
+  <div class="cb-body" id="cb-list"></div>
+  <div class="cb-footer">
+    <a href="live.html" class="cb-cta">Vedi tutte le date →</a>
+  </div>
+</div>
 
+<script>
+  /* =============================================
+     AGGIORNA QUI LE DATE DEI CONCERTI
+     ============================================= */
+  const concerti = [
+    { giorno: "20", mese: "GIU", evento: "NOTTE ROMANTICA", citta: "Pourrieres, TO" },
+    { giorno: "08", mese: "LUG", evento: "PIRIPIOLA",  citta: "Macello, TO" },
+    { giorno: "10", mese: "LUG", venue: "PIAZZA", citta: "Rivoli, TO" },
+  ];
+  /* ============================================= */
+
+  const list = document.getElementById('cb-list');
+  concerti.forEach(c => {
+    list.innerHTML += `
+      <div class="cb-row">
+        <div class="cb-date">
+          <div class="cb-day">${c.giorno}</div>
+          <div class="cb-month">${c.mese}</div>
+        </div>
+        <div class="cb-info">
+          <div class="cb-venue">${c.venue}</div>
+          <div class="cb-city">${c.citta}</div>
+        </div>
+        <div class="cb-dot"></div>
+      </div>`;
+  });
+
+  setTimeout(() => {
+    document.getElementById('concert-banner')?.classList.add('visible');
+  }, 2000);
+</script>
 </body>
 
 </html>
