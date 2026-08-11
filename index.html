@@ -4,8 +4,25 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>ATTI — Attilio Riccardi</title>
-  <meta name="description" content="Attilio Riccardi, musicista one man band, produttore e tecnico del suono. Ascolta il concept album ATTI.">
+  <title>Attilio Riccardi — Musicista, One Man Band, Produttore</title>
+  <meta name="description" content="Cantautore, polistrumentista e produttore musicale. Ascolta ATTI, il concept album del 2025, e scopri le prossime date live.">
+  <link rel="canonical" href="https://attilioriccardi.github.io/ar/">
+
+  <!-- Anteprima nelle condivisioni (WhatsApp, Facebook, Instagram, X) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Attilio Riccardi">
+  <meta property="og:locale" content="it_IT">
+  <meta property="og:title" content="Attilio Riccardi — Musicista, One Man Band, Produttore">
+  <meta property="og:description" content="Cantautore, polistrumentista e produttore musicale. Ascolta ATTI, il concept album del 2025, e scopri le prossime date live.">
+  <meta property="og:url" content="https://attilioriccardi.github.io/ar/">
+  <meta property="og:image" content="https://attilioriccardi.github.io/ar/assets/img/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Attilio Riccardi dal vivo, voce e chitarra">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Attilio Riccardi — Musicista, One Man Band, Produttore">
+  <meta name="twitter:description" content="Cantautore, polistrumentista e produttore musicale. Ascolta ATTI, il concept album del 2025, e scopri le prossime date live.">
+  <meta name="twitter:image" content="https://attilioriccardi.github.io/ar/assets/img/og-image.jpg">
 
   <!-- Favicons -->
   <link href="assets/img/favicon.png" rel="icon">
@@ -156,8 +173,35 @@
   <!-- Vendor JS Files -->
   <script src="assets/vendor/aos/aos.js" defer></script>
   <script src="assets/vendor/typed.js/typed.umd.js" defer></script>
+  <script src="assets/js/concerti.js" defer></script>
   <script src="assets/js/main.js" defer></script>
 
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "MusicGroup",
+    "name": "Attilio Riccardi",
+    "url": "https://attilioriccardi.github.io/ar/",
+    "image": "https://attilioriccardi.github.io/ar/assets/img/og-image.jpg",
+    "description": "Cantautore, polistrumentista e produttore musicale piemontese.",
+    "genre": ["Cantautorato", "Pop italiano", "Revival"],
+    "foundingLocation": { "@type": "Place", "name": "Pinerolo, Torino, Italia" },
+    "email": "attilioriccardi@gmail.com",
+    "sameAs": [
+      "https://open.spotify.com/intl-it/artist/33qCShB9vo9D3EXJWUJUIZ",
+      "https://www.youtube.com/@AttilioRiccardi",
+      "https://www.instagram.com/attirick/",
+      "https://www.facebook.com/attiriccardi",
+      "https://x.com/attilioriccardi"
+    ],
+    "album": [
+      { "@type": "MusicAlbum", "name": "ATTI",       "datePublished": "2025" },
+      { "@type": "MusicAlbum", "name": "Orizzonti",  "datePublished": "2021" },
+      { "@type": "MusicAlbum", "name": "A un passo", "datePublished": "2019" }
+    ]
+  }
+  </script>
 </head>
 
 <body class="index-page">
@@ -293,56 +337,6 @@
     <div class="cb-footer"></div>
   </div>
 
-<script>
-  /* =============================================
-     AGGIORNA QUI LE DATE DEI CONCERTI
-     Aggiungi "anno" per nascondere in automatico
-     le date già passate.
-     ============================================= */
-  const concerti = [
-    { giorno: "05", mese: "FEB", anno: 2026, venue: "CORTILE DEL MAGLIO",  citta: "Torino, TO" },
-    { giorno: "30", mese: "APR", anno: 2026, venue: "HOME CONCERT",        citta: "Presentazione disco ATTI" },
-    { giorno: "20", mese: "GIU", anno: 2026, venue: "NOTTE ROMANTICA",     citta: "Pourrieres, TO" },
-    { giorno: "08", mese: "LUG", anno: 2026, venue: "PIRIPIOLA",           citta: "Macello, TO" },
-    { giorno: "10", mese: "LUG", anno: 2026, venue: "PIAZZA",              citta: "Rivoli, TO" },
-    { giorno: "05", mese: "SET", anno: 2026, venue: "CAMPING SERRE MARIE", citta: "Fenestrelle, TO" },
-    { giorno: "19", mese: "SET", anno: 2026, venue: "FESTA PRIVATA",       citta: "Pinerolo, TO" },
-  ];
-  /* ============================================= */
-
-  (function () {
-    const MESI = { GEN:0, FEB:1, MAR:2, APR:3, MAG:4, GIU:5, LUG:6, AGO:7, SET:8, OTT:9, NOV:10, DIC:11 };
-    const banner = document.getElementById('concert-banner');
-    const list = document.getElementById('cb-list');
-    const oggi = new Date();
-    oggi.setHours(0, 0, 0, 0);
-
-    const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
-
-    const futuri = concerti.filter(c => {
-      if (!c.anno) return true;
-      return new Date(c.anno, MESI[c.mese] ?? 0, parseInt(c.giorno, 10)) >= oggi;
-    });
-
-    if (!futuri.length) { banner.remove(); return; }
-
-    list.innerHTML = futuri.map(c => `
-      <div class="cb-row">
-        <div class="cb-date">
-          <div class="cb-day">${esc(c.giorno)}</div>
-          <div class="cb-month">${esc(c.mese)}</div>
-        </div>
-        <div class="cb-info">
-          <div class="cb-venue">${esc(c.venue)}</div>
-          <div class="cb-city">${esc(c.citta)}</div>
-        </div>
-        <div class="cb-dot"></div>
-      </div>`).join('');
-
-    banner.querySelector('.cb-close').addEventListener('click', () => banner.remove());
-    setTimeout(() => banner.classList.add('visible'), 2000);
-  })();
-</script>
 </body>
 
 </html>

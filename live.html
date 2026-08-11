@@ -4,9 +4,25 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>ATTI</title>
-  <meta name="description" content="">
-  <meta name="keywords" content="">
+  <title>Live e concerti — Attilio Riccardi</title>
+  <meta name="description" content="One Man Band Revival: chitarra, voce e loop station per feste, matrimoni ed eventi. Repertorio, video dal vivo, prossime date e archivio dei concerti.">
+  <link rel="canonical" href="https://attilioriccardi.github.io/ar/live.html">
+
+  <!-- Anteprima nelle condivisioni (WhatsApp, Facebook, Instagram, X) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Attilio Riccardi">
+  <meta property="og:locale" content="it_IT">
+  <meta property="og:title" content="Live e concerti — Attilio Riccardi">
+  <meta property="og:description" content="One Man Band Revival: chitarra, voce e loop station per feste, matrimoni ed eventi. Repertorio, video dal vivo, prossime date e archivio dei concerti.">
+  <meta property="og:url" content="https://attilioriccardi.github.io/ar/live.html">
+  <meta property="og:image" content="https://attilioriccardi.github.io/ar/assets/img/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Attilio Riccardi dal vivo, voce e chitarra">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Live e concerti — Attilio Riccardi">
+  <meta name="twitter:description" content="One Man Band Revival: chitarra, voce e loop station per feste, matrimoni ed eventi. Repertorio, video dal vivo, prossime date e archivio dei concerti.">
+  <meta name="twitter:image" content="https://attilioriccardi.github.io/ar/assets/img/og-image.jpg">
 
   <!-- Favicons -->
 <link href="assets/img/favicon.png" rel="icon">
@@ -24,6 +40,90 @@
   <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
 
+
+<style>
+  /* ---- Sezione date live ---- */
+  .date-sezione { max-width: 760px; margin: 0 auto 3rem; }
+  .date-sezione h2 {
+    font-size: 1.35rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .date-sottotitolo {
+    font-size: 0.9rem;
+    opacity: 0.65;
+    margin-bottom: 1.25rem;
+  }
+
+  .date-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    margin-bottom: 0.6rem;
+    background: color-mix(in srgb, var(--default-color), transparent 95%);
+  }
+  .date-row.prossima {
+    border-left: 3px solid var(--accent-color);
+  }
+  .date-row.passata { opacity: 0.72; }
+
+  .date-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 54px;
+    line-height: 1.1;
+  }
+  .date-day { font-size: 1.5rem; font-weight: 700; color: var(--accent-color); }
+  .date-month {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+  .date-year { font-size: 0.65rem; opacity: 0.5; }
+
+  .date-info { flex: 1; min-width: 0; }
+  .date-venue { font-weight: 600; }
+  .date-city { font-size: 0.85rem; opacity: 0.7; }
+  .date-vuoto { opacity: 0.7; font-style: italic; }
+
+  /* ---- Archivio a fisarmonica ---- */
+  .archivio-anno {
+    border-top: 1px solid color-mix(in srgb, var(--default-color), transparent 88%);
+  }
+  .archivio-anno:last-of-type {
+    border-bottom: 1px solid color-mix(in srgb, var(--default-color), transparent 88%);
+  }
+  .archivio-anno > summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.9rem 0.25rem;
+    cursor: pointer;
+    font-weight: 600;
+    list-style: none;
+  }
+  .archivio-anno > summary::-webkit-details-marker { display: none; }
+  .archivio-anno > summary::after {
+    content: "+";
+    font-weight: 400;
+    font-size: 1.2rem;
+    opacity: 0.5;
+    margin-left: 0.75rem;
+  }
+  .archivio-anno[open] > summary::after { content: "\2013"; }
+  .archivio-conta {
+    margin-left: auto;
+    font-size: 0.8rem;
+    font-weight: 400;
+    opacity: 0.6;
+  }
+  .archivio-lista { padding-bottom: 0.75rem; }
+</style>
 </head>
 
 <body class="portfolio-page">
@@ -87,7 +187,7 @@ Contattami per portare nelle tue feste e nei tuoi eventi la magia del revival it
               
                 <!-- Video YouTube -->
           <div style="margin-top: 20px; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
-<iframe 
+<iframe loading="lazy"
     src="https://www.youtube.com/embed/VbQ-JeGtEEo?si=iCbES9pxTRIADVPO"
     title="YouTube video player"
     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;"
@@ -98,7 +198,7 @@ Contattami per portare nelle tue feste e nei tuoi eventi la magia del revival it
               
                 <!-- Video YouTube -->
 <div style="margin-top: 20px; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
-  <iframe
+  <iframe loading="lazy"
     src="https://www.youtube.com/embed/Qg7-XzzFjRo?si=diHrap6OJ7LhSnQJ"
     title="YouTube video player"
     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;"
@@ -124,9 +224,20 @@ Contattami per portare nelle tue feste e nei tuoi eventi la magia del revival it
 
     <div class="container">
 
-        </div>
-    
-    
+      <section class="date-sezione" id="prossime" data-aos="fade-up">
+        <h2>Prossime date</h2>
+        <p class="date-sottotitolo">Dove mi trovi nei prossimi mesi</p>
+        <div id="prossime-date"></div>
+      </section>
+
+      <section class="date-sezione" id="archivio" data-aos="fade-up">
+        <h2>Dove ho suonato</h2>
+        <p class="date-sottotitolo">L'archivio dei live già fatti &mdash; <span id="archivio-totale"></span></p>
+        <div id="archivio-date"></div>
+      </section>
+
+    </div>
+
   </main>
 
   <footer id="footer" class="footer dark-background">
@@ -160,6 +271,7 @@ Contattami per portare nelle tue feste e nei tuoi eventi la magia del revival it
   <script src="assets/vendor/aos/aos.js" defer></script>
 
   <!-- Main JS File -->
+  <script src="assets/js/concerti.js" defer></script>
   <script src="assets/js/main.js" defer></script>
 
 </body>
