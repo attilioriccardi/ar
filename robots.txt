@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://attilioriccardi.github.io/ar/sitemap.xml
+Sitemap: https://attilioriccardi.it/sitemap.xml
