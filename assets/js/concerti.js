@@ -13,10 +13,11 @@
 const CONCERTI = [
   { data: "2026-09-19", venue: "FESTA PRIVATA",       citta: "Pinerolo, TO" },
   { data: "2026-09-05", venue: "CAMPING SERRE MARIE", citta: "Fenestrelle, TO" },
+  { data: "2026-08-21", venue: "SPIAGGIA",            citta: "Marina di Bibbona" },
   { data: "2026-07-10", venue: "PIAZZA",              citta: "Rivoli, TO" },
   { data: "2026-07-08", venue: "PIRIPIOLA",           citta: "Macello, TO" },
   { data: "2026-06-20", venue: "NOTTE ROMANTICA",     citta: "Pourrieres, TO" },
-  { data: "2026-04-30", venue: "HOME CONCERT",        citta: "Pinerolo, TO", nota: "Presentazione disco ATTI" },
+  { data: "2026-04-30", venue: "HOME CONCERT",        citta: "Pinerolo, TO",      nota: "Presentazione disco ATTI" },
   { data: "2026-02-05", venue: "CORTILE DEL MAGLIO",  citta: "Torino, TO" },
 ];
 
