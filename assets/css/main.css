@@ -1481,19 +1481,20 @@ body, html {
   width: 100%;
   height: 100vh;
   overflow: hidden;
-}
-
-#hero {
-  width: 100%;
-  height: 100vh;
-  background-image: url(https://i.postimg.cc/W3j9bmqR/atti-home.png);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #111;
+  background-image: url(../img/hero.webp);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+@media (max-width: 768px) {
+  #hero {
+    background-image: url(../img/hero-mobile.webp);
+  }
 }
 
 #hero::before {
