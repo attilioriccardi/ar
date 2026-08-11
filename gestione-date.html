@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Gestione date live</title>
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --chassis:#1c1e1f;
+    --panel:#26292a;
+    --raised:#2f3334;
+    --line:#3d4142;
+    --ink:#e8e6e1;
+    --ink-dim:#8d9192;
+    --amber:#ffd34e;
+    --amber-dim:#8a7434;
+    --lcd-bg:#14110a;
+    --danger:#e0654a;
+    --radius:3px;
+  }
+
+  *{box-sizing:border-box}
+
+  body{
+    margin:0;
+    padding:clamp(12px,3vw,32px);
+    background:var(--chassis);
+    background-image:
+      repeating-linear-gradient(0deg,rgba(255,255,255,.014) 0 1px,transparent 1px 3px);
+    color:var(--ink);
+    font-family:"Barlow Condensed",system-ui,sans-serif;
+    font-size:17px;
+    line-height:1.4;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .unit{
+    max-width:860px;
+    margin:0 auto;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:0 1px 0 rgba(255,255,255,.05) inset,0 18px 50px rgba(0,0,0,.45);
+    overflow:hidden;
+  }
+
+  /* ---- testata: serigrafia da rack ---- */
+  .top{
+    display:flex;align-items:center;gap:14px;
+    padding:14px 18px;
+    background:linear-gradient(180deg,var(--raised),var(--panel));
+    border-bottom:1px solid var(--line);
+  }
+  .led{
+    width:9px;height:9px;border-radius:50%;
+    background:var(--amber);
+    box-shadow:0 0 9px var(--amber);
+    flex:none;
+  }
+  .top h1{
+    margin:0;font-size:19px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;
+  }
+  .top .ref{
+    margin-left:auto;font-family:"IBM Plex Mono",monospace;
+    font-size:11px;color:var(--ink-dim);letter-spacing:.08em;
+  }
+
+  .bay{padding:18px;border-bottom:1px solid var(--line)}
+  .bay:last-child{border-bottom:0}
+
+  legend,.eyebrow{
+    font-size:12px;font-weight:600;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--ink-dim);
+  }
+
+  /* ---- ingressi ---- */
+  fieldset{border:0;margin:0;padding:0}
+  .grid{
+    display:grid;gap:10px;margin-top:12px;
+    grid-template-columns:repeat(2,1fr);
+  }
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field.wide{grid-column:1/-1}
+  label{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim)}
+  .hint{font-size:12px;color:var(--ink-dim);letter-spacing:.02em;text-transform:none}
+
+  input{
+    width:100%;padding:9px 11px;
+    background:#191b1c;color:var(--ink);
+    border:1px solid var(--line);border-radius:var(--radius);
+    font-family:"IBM Plex Mono",monospace;font-size:14px;
+  }
+  input::placeholder{color:#5f6364}
+  input:focus-visible{outline:2px solid var(--amber);outline-offset:1px;border-color:transparent}
+  input[aria-invalid="true"]{border-color:var(--danger)}
+
+  button{
+    font-family:inherit;font-size:14px;font-weight:600;
+    letter-spacing:.16em;text-transform:uppercase;
+    padding:10px 18px;cursor:pointer;
+    border-radius:var(--radius);
+    border:1px solid var(--line);
+    background:var(--raised);color:var(--ink);
+    transition:background .12s,border-color .12s;
+  }
+  button:hover{background:#3a3f40}
+  button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+  .primary{background:var(--amber);color:#1a1608;border-color:var(--amber)}
+  .primary:hover{background:#ffdd74}
+
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+
+  /* ---- elenco date ---- */
+  .count{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:12px;color:var(--amber-dim);margin-left:8px;
+  }
+  ul{list-style:none;margin:12px 0 0;padding:0}
+  li{
+    display:flex;align-items:center;gap:14px;
+    padding:9px 0;border-top:1px solid var(--line);
+  }
+  li.past{color:var(--ink-dim)}
+  .when{
+    font-family:"IBM Plex Mono",monospace;font-size:13px;
+    color:var(--amber);white-space:nowrap;flex:none;width:104px;
+  }
+  li.past .when{color:var(--ink-dim)}
+  .what{flex:1;min-width:0}
+  .what b{font-weight:600;letter-spacing:.02em;display:block}
+  .what span{font-size:14px;color:var(--ink-dim);display:block}
+  .kill{
+    flex:none;padding:4px 9px;font-size:15px;letter-spacing:0;
+    background:none;border-color:transparent;color:var(--ink-dim);
+  }
+  .kill:hover{color:var(--danger);background:rgba(224,101,74,.1)}
+  .empty{color:var(--ink-dim);font-size:15px;margin-top:12px}
+
+  /* ---- il display: elemento firma ---- */
+  .lcd{
+    position:relative;margin-top:12px;
+    background:var(--lcd-bg);
+    border:1px solid #000;border-radius:var(--radius);
+    box-shadow:0 0 0 1px rgba(255,211,78,.12),inset 0 0 34px rgba(255,211,78,.05);
+    overflow:hidden;
+  }
+  .lcd::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(180deg,rgba(255,211,78,.05) 0 1px,transparent 1px 3px);
+  }
+  .lcd pre{
+    margin:0;padding:14px 16px;
+    max-height:230px;overflow:auto;
+    font-family:"IBM Plex Mono",monospace;
+    font-size:12.5px;line-height:1.65;
+    color:var(--amber);text-shadow:0 0 7px rgba(255,211,78,.35);
+    white-space:pre;
+  }
+
+  .note{margin:14px 0 0;font-size:15px;color:var(--ink-dim);max-width:62ch}
+  .note code{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;
+    color:var(--amber);background:#191b1c;padding:1px 5px;border-radius:2px;
+  }
+  a{color:var(--amber)}
+
+  .say{
+    margin-top:10px;font-family:"IBM Plex Mono",monospace;
+    font-size:12px;color:var(--amber);min-height:1.2em;
+  }
+  .say.bad{color:var(--danger)}
+
+  @media(max-width:600px){
+    .grid{grid-template-columns:1fr}
+    .when{width:86px;font-size:12px}
+    .top h1{font-size:16px;letter-spacing:.14em}
+    .top .ref{display:none}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{transition:none!important;animation:none!important}
+  }
+</style>
+</head>
+<body>
+
+<div class="unit">
+
+  <div class="top">
+    <span class="led" aria-hidden="true"></span>
+    <h1>Date live</h1>
+    <span class="ref">assets/js/concerti.js</span>
+  </div>
+
+  <!-- INGRESSO -->
+  <section class="bay">
+    <fieldset>
+      <legend>Aggiungi una data</legend>
+      <div class="grid">
+        <div class="field">
+          <label for="f-data">Giorno</label>
+          <input type="date" id="f-data">
+        </div>
+        <div class="field">
+          <label for="f-venue">Locale</label>
+          <input type="text" id="f-venue" placeholder="CORTILE DEL MAGLIO" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="f-citta">Città</label>
+          <input type="text" id="f-citta" placeholder="Torino, TO" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="f-nota">Nota <span class="hint">— facoltativa</span></label>
+          <input type="text" id="f-nota" placeholder="ingresso libero" autocomplete="off">
+        </div>
+      </div>
+      <div class="actions">
+        <button type="button" class="primary" id="add">Aggiungi alla lista</button>
+      </div>
+      <p class="say" id="say" role="status"></p>
+    </fieldset>
+  </section>
+
+  <!-- ELENCO -->
+  <section class="bay">
+    <span class="eyebrow">In programma</span><span class="count" id="n-next"></span>
+    <ul id="next"></ul>
+
+    <div style="margin-top:22px">
+      <span class="eyebrow">Già suonate</span><span class="count" id="n-past"></span>
+      <ul id="past"></ul>
+    </div>
+  </section>
+
+  <!-- USCITA -->
+  <section class="bay">
+    <span class="eyebrow">Da incollare nel file</span>
+    <div class="lcd"><pre id="out"></pre></div>
+    <div class="actions">
+      <button type="button" class="primary" id="copy">Copia</button>
+      <button type="button" id="open">Apri il file su GitHub</button>
+    </div>
+    <p class="note">
+      Copia il blocco, aprilo su GitHub e sostituisci tutto quello che sta fra
+      <code>const CONCERTI = [</code> e <code>];</code> — parentesi comprese. Poi premi
+      <strong>Commit changes</strong>.
+    </p>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var GITHUB = 'https://github.com/attilioriccardi/ar/edit/main/assets/js/concerti.js';
+
+  // Copia di riserva: usata se il file non è raggiungibile
+  // (per esempio aprendo questa pagina dal computer invece che dal sito).
+  var RISERVA = [
+    { data:"2026-09-19", venue:"FESTA PRIVATA",       citta:"Pinerolo, TO" },
+    { data:"2026-09-05", venue:"CAMPING SERRE MARIE", citta:"Fenestrelle, TO" },
+    { data:"2026-07-10", venue:"PIAZZA",              citta:"Rivoli, TO" },
+    { data:"2026-07-08", venue:"PIRIPIOLA",           citta:"Macello, TO" },
+    { data:"2026-06-20", venue:"NOTTE ROMANTICA",     citta:"Pourrieres, TO" },
+    { data:"2026-04-30", venue:"HOME CONCERT",        citta:"Pinerolo, TO", nota:"Presentazione disco ATTI" },
+    { data:"2026-02-05", venue:"CORTILE DEL MAGLIO",  citta:"Torino, TO" }
+  ];
+
+  var MESI = ['GEN','FEB','MAR','APR','MAG','GIU','LUG','AGO','SET','OTT','NOV','DIC'];
+  var oggi = new Date(); oggi.setHours(0,0,0,0);
+  var date = [];
+
+  var $ = function(id){ return document.getElementById(id); };
+
+  function parse(s){
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s||'').trim());
+    if(!m) return null;
+    var d = new Date(+m[1], +m[2]-1, +m[3]);
+    return isNaN(d) ? null : d;
+  }
+  function etichetta(s){
+    var d = parse(s);
+    return String(d.getDate()).padStart(2,'0')+' '+MESI[d.getMonth()]+' '+d.getFullYear();
+  }
+  function html(s){
+    return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
+    });
+  }
+  function stringa(s){ // per il codice generato
+    return String(s==null?'':s).replace(/\\/g,'\\\\').replace(/"/g,'\\"');
+  }
+  function dillo(testo, errore){
+    var el = $('say');
+    el.textContent = testo;
+    el.className = 'say' + (errore ? ' bad' : '');
+  }
+
+  function riga(c, i, passata){
+    return '<li class="'+(passata?'past':'')+'">'+
+      '<span class="when">'+etichetta(c.data)+'</span>'+
+      '<span class="what"><b>'+html(c.venue)+'</b><span>'+html(c.citta)+
+        (c.nota ? ' · '+html(c.nota) : '')+'</span></span>'+
+      '<button type="button" class="kill" data-i="'+i+'" '+
+        'aria-label="Togli '+html(c.venue)+'">✕</button>'+
+    '</li>';
+  }
+
+  function disegna(){
+    date.sort(function(a,b){ return parse(b.data) - parse(a.data); });
+
+    var futuro = [], passato = [];
+    date.forEach(function(c,i){
+      (parse(c.data) >= oggi ? futuro : passato).push({c:c, i:i});
+    });
+
+    $('next').innerHTML = futuro.length
+      ? futuro.map(function(o){ return riga(o.c,o.i,false); }).join('')
+      : '<p class="empty">Nessuna data in programma.</p>';
+    $('past').innerHTML = passato.length
+      ? passato.map(function(o){ return riga(o.c,o.i,true); }).join('')
+      : '<p class="empty">Ancora nessuna data archiviata.</p>';
+
+    $('n-next').textContent = futuro.length;
+    $('n-past').textContent = passato.length;
+
+    // allinea le colonne come nel file originale
+    var lv = 0, lc = 0;
+    date.forEach(function(c){
+      lv = Math.max(lv, stringa(c.venue).length);
+      lc = Math.max(lc, stringa(c.citta).length);
+    });
+
+    $('out').textContent = 'const CONCERTI = [\n' + date.map(function(c){
+      var s = '  { data: "'+c.data+'", venue: "'+stringa(c.venue)+'",'+
+              ' '.repeat(lv - stringa(c.venue).length) +
+              ' citta: "'+stringa(c.citta)+'"';
+      if(c.nota){ s += ','+' '.repeat(lc - stringa(c.citta).length)+' nota: "'+stringa(c.nota)+'"'; }
+      return s + ' },';
+    }).join('\n') + '\n];';
+  }
+
+  // --- aggiungi ---
+  $('add').addEventListener('click', function(){
+    var d = $('f-data').value.trim(),
+        v = $('f-venue').value.trim(),
+        k = $('f-citta').value.trim(),
+        n = $('f-nota').value.trim();
+
+    $('f-data').setAttribute('aria-invalid', !parse(d));
+    $('f-venue').setAttribute('aria-invalid', !v);
+
+    if(!parse(d)){ dillo('Scegli il giorno del concerto.', true); $('f-data').focus(); return; }
+    if(!v){ dillo('Manca il nome del locale.', true); $('f-venue').focus(); return; }
+
+    var doppia = date.some(function(c){
+      return c.data === d && c.venue.toUpperCase() === v.toUpperCase();
+    });
+    if(doppia){ dillo('Questa data è già nella lista.', true); return; }
+
+    var nuova = { data:d, venue:v.toUpperCase(), citta:k };
+    if(n) nuova.nota = n;
+    date.push(nuova);
+
+    ['f-data','f-venue','f-citta','f-nota'].forEach(function(id){
+      $(id).value = '';
+      $(id).removeAttribute('aria-invalid');
+    });
+    dillo(v.toUpperCase()+' aggiunto — ora copia il blocco qui sotto.');
+    disegna();
+    $('f-data').focus();
+  });
+
+  // --- togli ---
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('.kill');
+    if(!b) return;
+    var i = +b.dataset.i, tolta = date[i];
+    date.splice(i,1);
+    dillo(tolta.venue+' tolto dalla lista.');
+    disegna();
+  });
+
+  // --- copia ---
+  $('copy').addEventListener('click', function(){
+    var testo = $('out').textContent, btn = this;
+    function fatto(){
+      btn.textContent = 'Copiato';
+      setTimeout(function(){ btn.textContent = 'Copia'; }, 1800);
+    }
+    if(navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(testo).then(fatto).catch(seleziona);
+    } else { seleziona(); }
+    function seleziona(){
+      var r = document.createRange();
+      r.selectNodeContents($('out'));
+      var s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      try{ document.execCommand('copy'); fatto(); }
+      catch(_){ dillo('Copia a mano: il testo è già selezionato.', true); }
+    }
+  });
+
+  $('open').addEventListener('click', function(){
+    window.open(GITHUB, '_blank', 'noopener');
+  });
+
+  // --- carica l'elenco vero dal sito ---
+  fetch('assets/js/concerti.js', {cache:'no-store'})
+    .then(function(r){ if(!r.ok) throw 0; return r.text(); })
+    .then(function(src){
+      var m = src.match(/const CONCERTI\s*=\s*(\[[\s\S]*?\]);/);
+      if(!m) throw 0;
+      var letto = new Function('return '+m[1])();
+      if(!Array.isArray(letto) || !letto.length) throw 0;
+      date = letto.filter(function(c){ return parse(c.data); });
+      disegna();
+    })
+    .catch(function(){
+      date = RISERVA.slice();
+      disegna();
+      dillo('Elenco non letto dal sito: parto dall\u2019ultima copia salvata. Controlla che sia aggiornata.', true);
+    });
+
+  disegna();
+})();
+</script>
+</body>
+</html>
