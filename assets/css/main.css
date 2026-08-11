@@ -1513,3 +1513,33 @@ body, html {
   text-align: center;
   padding: 0 1rem;
 }
+
+
+/* ---- Icone SVG inline (sostituiscono il font Bootstrap Icons) ----
+   L'SVG sta dentro la <i>, quindi eredita font-size e color
+   dalle regole già esistenti del tema. */
+i.bi {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-style: normal;
+}
+
+i.bi > svg,
+.social-links a > svg,
+.scroll-top > svg {
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+}
+
+.scroll-top > svg { width: 24px; height: 24px; }
+
+.inline-icon { width: 1.25rem; height: 1.25rem; fill: currentColor; vertical-align: -0.2em; }
+
+.mobile-nav-toggle {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+}
