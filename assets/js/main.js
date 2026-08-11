@@ -66,9 +66,25 @@
     });
   });
 
-  /* Il preloader è stato rimosso di proposito:
-     si agganciava a window.load e teneva la pagina bianca
-     finché ogni singola risorsa non era scaricata. */
+  /**
+   * Preloader
+   * Nell'originale veniva rimosso su window.load, cioè solo dopo che
+   * ogni singola immagine aveva finito di scaricarsi: da lì la lentezza.
+   * Ora sparisce appena l'HTML è pronto. Il doppio aggancio serve perché
+   * questo script è caricato con defer: se il DOM è già stato analizzato
+   * l'evento DOMContentLoaded è passato e non scatterebbe mai.
+   */
+  const preloader = document.querySelector('#preloader');
+  if (preloader) {
+    const removePreloader = () => preloader.remove();
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', removePreloader);
+    } else {
+      removePreloader();
+    }
+    // rete di sicurezza: comunque via entro 3 secondi
+    setTimeout(removePreloader, 3000);
+  }
 
   /**
    * Pulsante "torna su"
