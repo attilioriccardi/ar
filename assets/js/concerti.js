@@ -11,6 +11,7 @@
    ============================================================ */
 
 const CONCERTI = [
+  { data: "2026-12-31", venue: "CAMPING SERRE MARIE", citta: "Fenestrelle",       nota: "Concerto Capodanno" },
   { data: "2026-09-19", venue: "FESTA PRIVATA",       citta: "Pinerolo, TO" },
   { data: "2026-09-05", venue: "CAMPING SERRE MARIE", citta: "Fenestrelle, TO" },
   { data: "2026-08-21", venue: "SPIAGGIA",            citta: "Marina di Bibbona" },
