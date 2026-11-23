@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Countdown Capodanno 2027</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0C1B30">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Capodanno">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icona-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --notte:#0C1B30; --notte-chiara:#17324F;
+  --neve:#EEF3F6; --brina:#9DBBD1; --champagne:#E9C46A;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  background:radial-gradient(120% 90% at 50% 110%, var(--notte-chiara) 0%, var(--notte) 65%);
+  color:var(--neve);
+  font-family:"Big Shoulders Display", Impact, "Arial Narrow Bold", "Arial Narrow", sans-serif;
+  overflow:hidden; -webkit-font-smoothing:antialiased;
+  -webkit-user-select:none; user-select:none; touch-action:manipulation; -webkit-tap-highlight-color:transparent;
+}
+body.idle{cursor:none}
+#monti{position:fixed;left:0;right:0;bottom:0;width:100%;height:32vh;z-index:1;pointer-events:none}
+.layer{position:fixed;inset:0;pointer-events:none}
+#neve{z-index:2} #fuochi{z-index:3}
+main{
+  position:fixed;inset:0;z-index:4;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5vh;
+  text-align:center;
+  padding:calc(4vh + env(safe-area-inset-top,0px)) calc(4vw + env(safe-area-inset-right,0px)) calc(4vh + env(safe-area-inset-bottom,0px)) calc(4vw + env(safe-area-inset-left,0px));
+  text-shadow:0 0 .4em rgba(12,27,48,.85);
+}
+#sopra{margin:0;font-weight:500;font-size:min(4.6vw,7.5vh);color:var(--brina);letter-spacing:.03em}
+#numero{font-weight:800;font-size:min(19vw,34vh);line-height:.95;font-variant-numeric:tabular-nums;letter-spacing:.01em;white-space:nowrap}
+#numero.giorni{font-size:min(10vw,20vh)}
+#sotto{margin:0;font-weight:500;font-size:min(3.4vw,5.5vh);color:var(--brina);opacity:.85}
+
+body[data-fase="minuto"] #numero{font-size:min(50vh,44vw);font-weight:900}
+body[data-fase="finale"] #numero{font-size:min(80vh,72vw);font-weight:900;line-height:.82}
+body[data-fase="finale"] #sopra, body[data-fase="finale"] #sotto{visibility:hidden}
+body[data-fase="festa"] #sopra{visibility:hidden}
+body[data-fase="festa"] #numero{color:var(--champagne);font-size:min(21vw,36vh);font-weight:900;animation:sboccia 1.4s cubic-bezier(.2,.8,.2,1) both}
+body[data-fase="festa"] #sotto{color:var(--neve);opacity:1}
+
+#numero.battito{animation:battito .7s cubic-bezier(.2,.8,.2,1)}
+@keyframes battito{from{transform:scale(1.3);opacity:.35}to{transform:scale(1);opacity:1}}
+@keyframes sboccia{from{transform:scale(.6);opacity:0;letter-spacing:.3em}to{transform:scale(1);opacity:1;letter-spacing:.01em}}
+
+#comandi{
+  position:fixed;left:50%;bottom:calc(3vh + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:5;
+  width:min(580px,92vw);
+  font:16px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:rgba(12,27,48,.92);border:1px solid rgba(157,187,209,.35);border-radius:14px;
+  padding:14px;color:var(--neve);transition:opacity .35s;
+}
+#comandi.nascosto{opacity:0;pointer-events:none}
+.riga{display:flex;gap:8px;margin-bottom:8px}
+#comandi button{
+  flex:1;min-height:50px;padding:8px 10px;cursor:pointer;
+  font:600 17px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--neve);
+  background:rgba(157,187,209,.14);border:1px solid rgba(157,187,209,.4);border-radius:10px;
+}
+#comandi button:active{background:rgba(233,196,106,.32)}
+#comandi button:focus-visible{outline:2px solid var(--champagne);outline-offset:2px}
+#stato{margin:4px 2px 0;color:var(--champagne)}
+.nota{margin:4px 2px 0;font-size:13px;color:var(--brina)}
+@media (prefers-reduced-motion: reduce){
+  #numero.battito, body[data-fase="festa"] #numero{animation:none}
+}
+</style>
+</head>
+<body data-fase="attesa">
+<svg id="monti" viewBox="0 0 1600 400" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0 400 L0 250 L120 190 L210 230 L330 120 L420 180 L520 140 L640 220 L760 90 L860 170 L960 130 L1080 210 L1200 110 L1300 180 L1420 150 L1520 220 L1600 190 L1600 400Z" fill="#132A45"/>
+  <path d="M0 400 L0 310 L150 270 L280 300 L400 240 L540 290 L700 250 L820 300 L980 260 L1120 300 L1260 250 L1400 290 L1600 270 L1600 400Z" fill="#0F2239"/>
+</svg>
+<canvas id="neve" class="layer"></canvas>
+<canvas id="fuochi" class="layer"></canvas>
+<main>
+  <p id="sopra">A mezzanotte mancano</p>
+  <div id="numero">--:--</div>
+  <p id="sotto">Capodanno al Camping Serre Marie</p>
+</main>
+<aside id="comandi" aria-label="Comandi">
+  <div class="riga">
+    <button data-azione="prova15">Prova 15 s</button>
+    <button data-azione="prova75">Prova 75 s</button>
+    <button data-azione="reale">Orologio reale</button>
+  </div>
+  <div class="riga">
+    <button data-azione="meno10">−10 s</button>
+    <button data-azione="meno1">−1 s</button>
+    <button data-azione="piu1">+1 s</button>
+    <button data-azione="piu10">+10 s</button>
+  </div>
+  <div class="riga">
+    <button data-azione="intero" id="bottoneIntero">Schermo intero</button>
+    <button data-azione="chiudi">Nascondi</button>
+  </div>
+  <p id="stato"></p>
+  <p class="nota">Tocca lo schermo per mostrare o nascondere i comandi. Con «+1 s» la mezzanotte arriva un secondo prima.</p>
+</aside>
+<script>
+const MEZZANOTTE = new Date(2027, 0, 1, 0, 0, 0).getTime();
+const ANNO = 2027;
+const TESTO_SOTTO = 'Capodanno al Camping Serre Marie';
+let scarto = 0, prova = null, faseAttuale = '', testoAttuale = '', inizioFesta = 0, prossimoLancio = 0;
+
+const $ = id => document.getElementById(id);
+const numero = $('numero'), sopra = $('sopra'), sotto = $('sotto'), comandi = $('comandi'), stato = $('stato');
+const riduci = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const due = n => String(n).padStart(2, '0');
+
+function formatta(ms) {
+  let s = Math.ceil(ms / 1000);
+  const g = Math.floor(s / 86400); s -= g * 86400;
+  const h = Math.floor(s / 3600); s -= h * 3600;
+  const m = Math.floor(s / 60); s -= m * 60;
+  numero.classList.toggle('giorni', g > 0);
+  if (g > 0) return `${g} ${g === 1 ? 'giorno' : 'giorni'} ${due(h)}:${due(m)}:${due(s)}`;
+  if (h > 0) return `${h}:${due(m)}:${due(s)}`;
+  return `${m}:${due(s)}`;
+}
+
+function tick() {
+  const ora = Date.now() + scarto;
+  const resto = (prova ?? MEZZANOTTE) - ora;
+  const fase = resto <= 0 ? 'festa' : resto <= 10000 ? 'finale' : resto <= 60000 ? 'minuto' : 'attesa';
+  if (fase !== faseAttuale) {
+    document.body.dataset.fase = fase;
+    numero.classList.remove('giorni', 'battito');
+    sopra.textContent = fase === 'minuto' ? 'Ultimo minuto' : 'A mezzanotte mancano';
+    sotto.textContent = fase === 'festa' ? 'Auguri a tutti!' : TESTO_SOTTO;
+    if (fase === 'festa') { inizioFesta = performance.now(); prossimoLancio = 0; }
+    faseAttuale = fase; testoAttuale = '';
+  }
+  let testo;
+  if (fase === 'festa') testo = `Buon ${ANNO}`;
+  else if (fase === 'attesa') testo = formatta(resto);
+  else testo = String(Math.ceil(resto / 1000));
+  if (testo !== testoAttuale) {
+    numero.textContent = testo;
+    if (fase === 'finale' && !riduci) {
+      numero.classList.remove('battito'); void numero.offsetWidth; numero.classList.add('battito');
+    }
+    testoAttuale = testo;
+  }
+  if (!comandi.classList.contains('nascosto')) aggiornaStato(ora);
+}
+
+/* Neve e fuochi d’artificio */
+const cvN = $('neve'), cxN = cvN.getContext('2d');
+const cvF = $('fuochi'), cxF = cvF.getContext('2d');
+let W = 0, H = 0;
+function ridimensiona() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  W = innerWidth; H = innerHeight;
+  for (const [cv, cx] of [[cvN, cxN], [cvF, cxF]]) {
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    cv.style.width = W + 'px'; cv.style.height = H + 'px';
+    cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+}
+ridimensiona();
+addEventListener('resize', ridimensiona);
+
+const fiocco = iniziale => ({
+  x: Math.random() * W, y: iniziale ? Math.random() * H : -6,
+  r: Math.random() * 2.2 + 0.6, vy: Math.random() * 0.45 + 0.2,
+  deriva: Math.random() * 0.4 + 0.1, fase: Math.random() * Math.PI * 2
+});
+const fiocchi = Array.from({ length: riduci ? 0 : 120 }, () => fiocco(true));
+
+const colori = ['#E9C46A', '#F6E7B8', '#EEF3F6', '#9DBBD1', '#E8735A', '#86C9A8'];
+const razzi = [], scintille = [];
+const scala = () => Math.max(H, 400) / 900;
+const coloreACaso = () => colori[Math.random() * colori.length | 0];
+
+function lancia() {
+  const s = scala(), g = 0.11 * s, quota = H * (0.45 + Math.random() * 0.3);
+  razzi.push({ x: W * (0.12 + Math.random() * 0.76), y: H + 10, vx: (Math.random() - 0.5) * 1.2 * s,
+               vy: -Math.sqrt(2 * g * quota), g, colore: coloreACaso() });
+}
+function esplodi(r) {
+  const s = scala(), n = riduci ? 40 : 80 + (Math.random() * 50 | 0);
+  const forza = (2.6 + Math.random() * 2.2) * s;
+  const secondo = Math.random() < 0.35 ? coloreACaso() : r.colore;
+  for (let i = 0; i < n; i++) {
+    const a = Math.PI * 2 * i / n + Math.random() * 0.2, v = forza * (0.55 + Math.random() * 0.45);
+    scintille.push({ x: r.x, y: r.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, vita: 1,
+                     cala: 0.010 + Math.random() * 0.010, colore: i % 2 ? secondo : r.colore, g: 0.045 * s });
+  }
+}
+
+function frame(t) {
+  tick();
+  const festa = faseAttuale === 'festa';
+
+  cxN.clearRect(0, 0, W, H);
+  cxN.fillStyle = `rgba(238,243,246,${festa ? 0.35 : 0.75})`;
+  for (const f of fiocchi) {
+    f.y += f.vy; f.fase += 0.01; f.x += Math.sin(f.fase) * f.deriva * 0.5;
+    if (f.y > H + 6) Object.assign(f, fiocco(false));
+    cxN.beginPath(); cxN.arc(f.x, f.y, f.r, 0, Math.PI * 2); cxN.fill();
+  }
+
+  cxF.globalCompositeOperation = 'destination-out';
+  cxF.fillStyle = 'rgba(0,0,0,0.18)';
+  cxF.fillRect(0, 0, W, H);
+  cxF.globalCompositeOperation = 'lighter';
+
+  if (festa && t >= prossimoLancio) {
+    const intenso = (t - inizioFesta) / 1000 < 90;
+    lancia();
+    if (intenso && Math.random() < 0.4) lancia();
+    prossimoLancio = t + (intenso ? 280 + Math.random() * 420 : 900 + Math.random() * 1600) * (riduci ? 3 : 1);
+  }
+  for (let i = razzi.length - 1; i >= 0; i--) {
+    const r = razzi[i];
+    r.x += r.vx; r.y += r.vy; r.vy += r.g;
+    cxF.fillStyle = r.colore; cxF.fillRect(r.x - 1.5, r.y - 1.5, 3, 3);
+    if (r.vy >= -0.6) { esplodi(r); razzi.splice(i, 1); }
+  }
+  const raggio = 1.8 * scala() + 0.4;
+  for (let i = scintille.length - 1; i >= 0; i--) {
+    const p = scintille[i];
+    p.vx *= 0.985; p.vy = p.vy * 0.985 + p.g; p.x += p.vx; p.y += p.vy; p.vita -= p.cala;
+    if (p.vita <= 0) { scintille.splice(i, 1); continue; }
+    cxF.globalAlpha = Math.min(1, p.vita * 1.3);
+    cxF.fillStyle = p.colore;
+    cxF.beginPath(); cxF.arc(p.x, p.y, raggio, 0, Math.PI * 2); cxF.fill();
+  }
+  cxF.globalAlpha = 1;
+  requestAnimationFrame(frame);
+}
+
+/* Comandi: tocco e tastiera */
+let ultimoStato = '';
+function aggiornaStato(ora = Date.now() + scarto) {
+  const d = new Date(ora);
+  const parti = [`Ora: ${due(d.getHours())}:${due(d.getMinutes())}:${due(d.getSeconds())}.`];
+  if (scarto !== 0) parti.push(`Orologio spostato di ${scarto > 0 ? '+' : ''}${scarto / 1000} s.`);
+  if (prova !== null) parti.push('Prova in corso: tocca «Orologio reale» per tornare alla mezzanotte vera.');
+  const testo = parti.join(' ');
+  if (testo !== ultimoStato) { stato.textContent = testo; ultimoStato = testo; }
+}
+let timerComandi;
+function mostraComandi(durata = 8000) {
+  comandi.classList.remove('nascosto'); aggiornaStato();
+  clearTimeout(timerComandi);
+  if (durata) timerComandi = setTimeout(() => comandi.classList.add('nascosto'), durata);
+}
+function nascondiComandi() { clearTimeout(timerComandi); comandi.classList.add('nascosto'); }
+
+const radice = document.documentElement;
+const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const puoSchermoIntero = !!(radice.requestFullscreen || radice.webkitRequestFullscreen);
+if (standalone || !puoSchermoIntero) $('bottoneIntero').hidden = true;
+function schermoIntero() {
+  const attivo = document.fullscreenElement || document.webkitFullscreenElement;
+  if (!attivo) (radice.requestFullscreen || radice.webkitRequestFullscreen)?.call(radice)?.catch?.(() => {});
+  else (document.exitFullscreen || document.webkitExitFullscreen)?.call(document);
+}
+
+function esegui(azione) {
+  const ora = Date.now() + scarto;
+  if (azione === 'prova15') prova = ora + 15000;
+  else if (azione === 'prova75') prova = ora + 75000;
+  else if (azione === 'reale') prova = null;
+  else if (azione === 'meno10') scarto -= 10000;
+  else if (azione === 'meno1') scarto -= 1000;
+  else if (azione === 'piu1') scarto += 1000;
+  else if (azione === 'piu10') scarto += 10000;
+  else if (azione === 'intero') schermoIntero();
+  else if (azione === 'chiudi') { nascondiComandi(); return; }
+  if (azione.startsWith('prova')) nascondiComandi(); else mostraComandi(6000);
+}
+
+comandi.addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (b) esegui(b.dataset.azione);
+});
+document.addEventListener('click', e => {
+  tieniAcceso();
+  if (comandi.contains(e.target)) return;
+  if (comandi.classList.contains('nascosto')) mostraComandi(); else nascondiComandi();
+});
+addEventListener('keydown', e => {
+  const k = e.key.toLowerCase();
+  if (k === 'f') schermoIntero();
+  else if (k === 't') esegui('prova15');
+  else if (k === 'l') esegui('prova75');
+  else if (k === 'r') esegui('reale');
+  else if (e.key === 'ArrowRight') { e.preventDefault(); esegui(e.shiftKey ? 'piu10' : 'piu1'); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); esegui(e.shiftKey ? 'meno10' : 'meno1'); }
+  else if (k === 'h') { comandi.classList.contains('nascosto') ? mostraComandi(0) : nascondiComandi(); }
+});
+
+/* Cursore nascosto, schermo sempre acceso, funzionamento offline */
+let timerCursore;
+function cursoreAttivo() {
+  document.body.classList.remove('idle');
+  clearTimeout(timerCursore);
+  timerCursore = setTimeout(() => document.body.classList.add('idle'), 2500);
+}
+addEventListener('mousemove', cursoreAttivo);
+
+async function tieniAcceso() {
+  try { if (navigator.wakeLock) await navigator.wakeLock.request('screen'); } catch (e) {}
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') tieniAcceso(); });
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+
+cursoreAttivo();
+tieniAcceso();
+mostraComandi(10000);
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
